@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 Parse 增删改查</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div v-if="!currentUser">
+        <a href="/login.html">前往登录页</a>
+      </div>
+    <div v-else>
+      <h2>Todo List</h2>
+      <a href="/login.html">前往登录页</a>
+      <form @submit.prevent="addTodo">
+        <input type="text" v-model="newTodo" placeholder="添加新的 Todo">
+        <button type="submit">添加</button>
+      </form>
+      <ul>
+        <li v-for="todo in todos" :key="todo.id">
+            <span v-if="!todo.editing">{{ todo.get('title') }}</span>
+            <input v-else type="text" v-model="todo.updatedTitle">
+          <button @click="deleteTodo(todo)">删除</button>
+          <button @click="toggleEdit(todo)" v-if="!todo.editing">编辑</button>
+          <button @click="saveEdit(todo)" v-else>保存</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    const Todo = Parse.Object.extend("Todo");
+
+    createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        const newTodo = ref('');
+        const todos = ref([]);
+
+        async function fetchTodos() {
+          const query = new Parse.Query(Todo);
+          query.equalTo("user", currentUser.value);
+          todos.value = await query.find();
+        }
+
+        async function addTodo() {
+          const todo = new Todo();
+          todo.set("title", newTodo.value);
+          todo.set("user", currentUser.value);
+
+          // 设置 ACL
+          const acl = new Parse.ACL(currentUser.value);
+          acl.setReadAccess(currentUser.value, true);
+          acl.setWriteAccess(currentUser.value, true);
+          todo.setACL(acl);
+
+          await todo.save();
+          newTodo.value = '';
+          fetchTodos();
+        }
+
+        async function deleteTodo(todo) {
+          await todo.destroy();
+          fetchTodos();
+        }
+
+        function toggleEdit(todo) {
+          todo.editing = !todo.editing;
+          if (todo.editing) {
+            todo.updatedTitle = todo.get('title');
+          }
+        }
+
+        async function saveEdit(todo) {
+          todo.set('title', todo.updatedTitle);
+          await todo.save();
+          todo.editing = false;
+        }
+
+        if (currentUser.value) {
+          fetchTodos();
+        }
+
+        return { 
+          currentUser, newTodo, todos, 
+          addTodo, deleteTodo, toggleEdit, saveEdit
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

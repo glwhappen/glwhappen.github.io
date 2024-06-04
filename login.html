@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"> -->
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+  <style>
+    body {
+      overflow: hidden;
+    }
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .box-card {
+      width: 400px;
+    }
+    
+    .switch-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .switch-container span {
+      padding: 10px;
+      cursor: pointer;
+    }
+    
+    .switch-container .active {
+      border-bottom: 2px solid #409eff;
+    }
+    </style>
+</head>
+<body>
+  <div id="app">
+    <div class="login-container">
+      <el-card class="box-card">
+        <div class="switch-container">
+          <span 
+            :class="{ active: isActive === 'login' }" 
+            @click="isActive = 'login'"
+          >登录</span>
+          <span 
+            :class="{ active: isActive === 'register' }" 
+            @click="isActive = 'register'"
+          >注册</span>
+        </div>
+  
+        <el-form :model="form" :rules="rules" ref="formRef">
+          <el-form-item prop="username" label="用户名">
+            <el-input v-model="form.username" name="username"></el-input>
+          </el-form-item>
+  
+          <el-form-item prop="password" label="密　码">
+            <el-input v-model="form.password" type="password" name="password"></el-input>
+          </el-form-item>
+  
+          <el-form-item prop="email" label="邮　箱" v-if="isActive === 'register'">
+            <el-input v-model="form.email" name="email"></el-input>
+          </el-form-item>
+  
+          <el-form-item>
+            <el-button type="primary" :loading="form.loading" @click="submitForm">{{ isActive === 'login' ? '登录' : '注册' }}</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive, h } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        const isActive = ref('login');
+        const formRef = ref(null);
+        const form = reactive({
+          username: '',
+          password: '',
+          email: '',
+          loading: false,
+        });
+        console.log("currentUser", currentUser.value)
+
+        const rules = reactive({
+          username: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+          ],
+          email: [
+            { required: true, message: '请输入邮箱', trigger: 'blur' },
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' },
+          ],
+        });
+        async function signup(username, password, email) {
+          const user = new Parse.User();
+          user.set('username', username);
+          user.set('password', password);
+          user.set('email', email);
+
+          try {
+            await user.signUp();
+            currentUser.value = Parse.User.current();
+            ElementPlus.ElMessage.success("注册成功")
+            window.location.href = '/index.html'
+          } catch (e) {
+            ElementPlus.ElMessage.error(e)
+          }
+        }
+        async function login(username, password) {
+          form.loading = true
+          try {
+            
+            await Parse.User.logIn(username, password);
+            currentUser.value = Parse.User.current();
+            ElementPlus.ElMessage.success("登录成功")
+            console.log(form)
+            window.location.href = '/index.html'
+          } catch (e) {
+          //   ElementPlus.ElMessage({
+          //   message: h('p', null, '这是一条消息提示'),
+          //   type: 'success',
+          // });
+          ElementPlus.ElMessage.error(e)
+          }
+          form.loading = false
+        }
+        const submitForm = () => {
+          formRef.value.validate((valid) => {
+            if (valid) {
+              // 在这里处理登录或注册逻辑
+              console.log(form);
+              if (isActive.value == 'login') {
+                login(form.username, form.password)
+              } else {
+                signup(form.username, form.password, form.email)
+              }
+              
+            } else {
+              return false;
+            }
+          });
+        };
+        return { 
+          isActive, formRef, form, rules, submitForm
+        };
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>

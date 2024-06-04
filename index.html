@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+
+</head>
+<body>
+  <div id="app">
+    首页
+    <br>
+    <p class="welcome-message">欢迎，{{ currentUser.get('username') }}!</p>
+    <br>
+    <el-button @click="logout">退出登录</el-button>
+    
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive, h } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        if (!currentUser.value) {
+          window.location.href = '/login.html';
+        }
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+            window.location.href = '/login.html';
+        }
+
+        return { 
+            currentUser, logout
+        };
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>

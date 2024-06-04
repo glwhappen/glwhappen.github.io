@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"> -->
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+  <style>
+    #app {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    p.error {
+      color: red;
+    }
+
+    .welcome-message {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px; /* 添加间距 */
+    }
+
+    .actions a {
+      display: inline-block; /* 使链接元素变成块级元素 */
+      padding: 10px 15px;
+      background-color: #007bff; /* 蓝色 */
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease; /* 过渡效果 */
+    }
+
+    .actions a:hover {
+      background-color: #0069d9; /* 深蓝色 */
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div v-if="!currentUser">
+      <button @click="isLoginForm = true">登录</button>
+      <button @click="isLoginForm = false">注册</button>
+      <form v-if="isLoginForm" @submit.prevent="login">
+        <input type="text" v-model="username" placeholder="用户名">
+        <input type="password" v-model="password" placeholder="密码">
+        <button type="submit">登录</button>
+        <p v-if="error">{{ error }}</p>
+        <el-button type="primary">按钮</el-button>
+      </form>
+      
+      <form v-else @submit.prevent="signup">
+        <input type="text" v-model="username" placeholder="用户名">
+        <input type="email" v-model="email" placeholder="邮箱">
+        <input type="password" v-model="password" placeholder="密码">
+        <button type="submit">注册</button>
+        <p v-if="error">{{ error }}</p>
+      </form>
+    </div>
+    <div v-else>
+        <p class="welcome-message">欢迎，{{ currentUser.get('username') }}!</p>
+        <button @click="logout">退出登录</button>
+        <div class="actions">
+          <a href="/todo.html">前往todo</a>
+          <!-- <a href="/单词.html">前往背单词</a>
+          <a href="/其他内容.html">其他内容</a> -->
+        </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed } = Vue;
+    // import ElementPlus from 'element-plus';
+    // import { createApp, ref, computed } from 'vue'
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    createApp({
+      setup() {
+        const username = ref('');
+        const password = ref('');
+        const email = ref('');
+        const isLoginForm = ref(true);
+        const error = ref(null);
+        const currentUser = ref(Parse.User.current());
+        const isLoading = ref(false);
+        async function login() {
+          try {
+            await Parse.User.logIn(username.value, password.value);
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        async function signup() {
+          const user = new Parse.User();
+          user.set('username', username.value);
+          user.set('password', password.value);
+          user.set('email', email.value);
+
+          try {
+            await user.signUp();
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+        }
+
+        return { 
+          username, password, email, isLoginForm, error, currentUser, isLoading,
+          login, signup, logout
+        };
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>

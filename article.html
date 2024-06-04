@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+
+</head>
+<body>
+  <div id="app">
+    <p class="welcome-message">欢迎，{{ currentUser.get('username') }}!</p>
+    <el-button @click="logout">退出登录</el-button>
+    <el-button @click="openArticleDialog">添加文章</el-button>
+
+    <el-table :data="articles" style="width: 100%">
+      <el-table-column prop="title" label="标题"></el-table-column>
+      <el-table-column prop="content" label="内容"></el-table-column>
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button @click="editArticle(scope.row)">编辑</el-button>
+          <el-button @click="deleteArticle(scope.row)" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog :visible="isArticleDialogOpen" @update:visible="isArticleDialogOpen = $event" title="文章管理">
+      <el-form :model="articleForm">
+        <el-form-item label="标题">
+          <el-input v-model="articleForm.title"></el-input>
+        </el-form-item>
+        <el-form-item label="内容">
+          <el-input type="textarea" v-model="articleForm.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="isArticleDialogOpen = false">取消</el-button>
+        <el-button type="primary" @click="saveArticle">保存</el-button>
+      </template>
+    </el-dialog>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    const app = createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        if (!currentUser.value) {
+          window.location.href = '/login.html';
+        }
+        const articles = ref([]);
+        const isArticleDialogOpen = ref(false);
+        const articleForm = reactive({ id: '', title: '', content: '' });
+
+        function logout() {
+          Parse.User.logOut();
+          window.location.href = '/login.html';
+        }
+
+        async function fetchArticles() {
+          const Article = Parse.Object.extend("Article");
+          const query = new Parse.Query(Article);
+          try {
+            const results = await query.find();
+            articles.value = results.map(article => ({
+              id: article.id,
+              title: article.get('title'),
+              content: article.get('content')
+            }));
+          } catch (error) {
+            console.error('Error while fetching articles', error);
+          }
+        }
+
+
+        async function saveArticle() {
+          const Article = Parse.Object.extend("Article");
+          let article;
+
+          if (articleForm.id) {
+            const query = new Parse.Query(Article);
+            article = await query.get(articleForm.id);
+          } else {
+            article = new Article();
+          }
+
+          article.set('title', articleForm.title);
+          article.set('content', articleForm.content);
+
+          try {
+            await article.save();
+            fetchArticles(); // 刷新文章列表
+            isArticleDialogOpen.value = false; // 关闭对话框
+          } catch (error) {
+            console.error('Error while saving the article', error);
+          }
+        }
+
+        function editArticle(article) {
+          articleForm.id = article.id;
+          articleForm.title = article.title;
+          articleForm.content = article.content;
+          isArticleDialogOpen.value = true;
+        }
+
+        async function deleteArticle(article) {
+          const Article = Parse.Object.extend("Article");
+          const query = new Parse.Query(Article);
+          try {
+            const articleToDelete = await query.get(article.id);
+            await articleToDelete.destroy();
+            fetchArticles(); // 刷新文章列表
+          } catch (error) {
+            console.error('Error while deleting article', error);
+          }
+        }
+
+
+        function openArticleDialog() {
+          isArticleDialogOpen.value = true;
+          articleForm.id = '';
+          articleForm.title = '';
+          articleForm.content = '';
+          console.log("Dialog status:", isArticleDialogOpen.value); // 查看状态
+          nextTick(() => {
+            console.log("Dialog status after next tick:", isArticleDialogOpen.value);
+          });
+        }
+
+        onMounted(() => {
+          fetchArticles(); // 加载文章数据
+        });
+
+        return { currentUser, logout, articles, isArticleDialogOpen, articleForm, saveArticle, editArticle, deleteArticle, openArticleDialog };
+      }
+    });
+
+    app.use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>

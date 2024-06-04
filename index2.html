@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css"> -->
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+
+</head>
+<body>
+  <div id="app">
+    <div v-if="!currentUser">
+      <el-button type="primary" @click="isLoginForm = true">登录</el-button>
+      <el-button @click="isLoginForm = false">注册</el-button>
+      <el-form
+        :model="formData"
+        :rules="rules"
+        ref="formRef"
+        label-width="100px"
+        v-if="isLoginForm"
+        @submit.prevent="login"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="formData.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            v-model="formData.password"
+            type="password"
+            placeholder="请输入密码"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" native-type="submit">登录</el-button>
+          <p v-if="error" class="error">{{ error }}</p>
+        </el-form-item>
+      </el-form>
+      <el-form
+        :model="formData"
+        :rules="rules"
+        ref="formRef"
+        label-width="100px"
+        v-else
+        @submit.prevent="signup"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="formData.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="formData.email" type="email" placeholder="请输入邮箱" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            v-model="formData.password"
+            type="password"
+            placeholder="请输入密码"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" native-type="submit">注册</el-button>
+          <p v-if="error" class="error">{{ error }}</p>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div v-else>
+      <p class="welcome-message">欢迎，{{ currentUser.get('username') }}!</p>
+      <div class="actions">
+        <el-button type="danger" @click="logout">退出登录</el-button>
+        <div>
+          <el-link type="primary" href="/todo.html">前往todo</el-link>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    createApp({
+      setup() {
+        const formData = reactive({
+          username: "",
+          email: "",
+          password: "",
+        });
+
+        const rules = reactive({
+          username: [
+            { required: true, message: "请输入用户名", trigger: "blur" },
+            { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
+          ],
+          email: [
+            { required: true, message: "请输入邮箱地址", trigger: "blur" },
+            { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] },
+          ],
+          password: [
+            { required: true, message: "请输入密码", trigger: "blur" },
+            { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" },
+          ],
+        });
+
+        const formRef = ref(null);
+
+
+
+        async function login() {
+          try {
+            await Parse.User.logIn(username.value, password.value);
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        async function signup() {
+          const user = new Parse.User();
+          user.set('username', username.value);
+          user.set('password', password.value);
+          user.set('email', email.value);
+
+          try {
+            await user.signUp();
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+        }
+
+        return { 
+          formRef,
+          login, signup, logout
+        };
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+  <style>
+    .articles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  border-radius: 5px;
+}
+
+input, textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button @click="openModal">添加文章</button>
+    <div class="articles">
+      <div v-for="article in articles" :key="article.id" class="card">
+        <h2>{{ article.title }}</h2>
+        <p>{{ article.content }}</p>
+        <button @click="editArticle(article)">编辑</button>
+        <button @click="deleteArticle(article.id)">删除</button>
+      </div>
+    </div>
+  
+    <div v-if="isModalOpen" class="modal">
+      <div class="modal-content">
+        <h2>{{ modalTitle }}</h2>
+        <label for="title">标题:</label>
+        <input id="title" v-model="form.title" type="text">
+  
+        <label for="content">内容:</label>
+        <textarea id="content" v-model="form.content"></textarea>
+  
+        <button @click="saveArticle">保存</button>
+        <button @click="closeModal">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    const app = createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        if (!currentUser.value) {
+          window.location.href = '/login.html';
+        }
+        const articles = ref([]);
+        const isArticleDialogOpen = ref(false);
+        const articleForm = reactive({ id: '', title: '', content: '' });
+
+        function logout() {
+          Parse.User.logOut();
+          window.location.href = '/login.html';
+        }
+
+        async function fetchArticles() {
+          const Article = Parse.Object.extend("Article");
+          const query = new Parse.Query(Article);
+          try {
+            const results = await query.find();
+            articles.value = results.map(article => ({
+              id: article.id,
+              title: article.get('title'),
+              content: article.get('content')
+            }));
+          } catch (error) {
+            console.error('Error while fetching articles', error);
+          }
+        }
+
+
+        async function saveArticle() {
+          const Article = Parse.Object.extend("Article");
+          let article;
+
+          if (articleForm.id) {
+            const query = new Parse.Query(Article);
+            article = await query.get(articleForm.id);
+          } else {
+            article = new Article();
+          }
+
+          article.set('title', articleForm.title);
+          article.set('content', articleForm.content);
+
+          try {
+            await article.save();
+            fetchArticles(); // 刷新文章列表
+            isArticleDialogOpen.value = false; // 关闭对话框
+          } catch (error) {
+            console.error('Error while saving the article', error);
+          }
+        }
+
+        function editArticle(article) {
+          articleForm.id = article.id;
+          articleForm.title = article.title;
+          articleForm.content = article.content;
+          isArticleDialogOpen.value = true;
+        }
+
+        async function deleteArticle(article) {
+          const Article = Parse.Object.extend("Article");
+          const query = new Parse.Query(Article);
+          try {
+            const articleToDelete = await query.get(article.id);
+            await articleToDelete.destroy();
+            fetchArticles(); // 刷新文章列表
+          } catch (error) {
+            console.error('Error while deleting article', error);
+          }
+        }
+
+
+        function openArticleDialog() {
+          isArticleDialogOpen.value = true;
+          articleForm.id = '';
+          articleForm.title = '';
+          articleForm.content = '';
+          console.log("Dialog status:", isArticleDialogOpen.value); // 查看状态
+          nextTick(() => {
+            console.log("Dialog status after next tick:", isArticleDialogOpen.value);
+          });
+        }
+
+        onMounted(() => {
+          fetchArticles(); // 加载文章数据
+        });
+
+        return { currentUser, logout, articles, isArticleDialogOpen, articleForm, saveArticle, editArticle, deleteArticle, openArticleDialog };
+      }
+    });
+
+    app.use(ElementPlus).mount('#app');
+  </script>
+</body>
+</html>
