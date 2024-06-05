@@ -1,0 +1,157 @@
+<!-- 
+一个网页，使用了 vue 和 parse-server 
+可以实现用户注册登录，以及用户登录后的 todo list 功能 
+设计理念：不需要任何的打包工具，随时编辑，随时展示，就是快，可以瞬间把自己的小想法实现出来
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>登录注册+todo</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div v-if="!currentUser">
+      <button @click="isLoginForm = true">登录</button>
+      <button @click="isLoginForm = false">注册</button>
+      <form v-if="isLoginForm" @submit.prevent="login">
+        <input type="text" v-model="username" placeholder="用户名">
+        <input type="password" v-model="password" placeholder="密码">
+        <button type="submit">登录</button>
+        <p v-if="error">{{ error }}</p>
+      </form>
+      <form v-else @submit.prevent="signup">
+        <input type="text" v-model="username" placeholder="用户名">
+        <input type="email" v-model="email" placeholder="邮箱">
+        <input type="password" v-model="password" placeholder="密码">
+        <button type="submit">注册</button>
+        <p v-if="error">{{ error }}</p>
+      </form>
+    </div>
+    <div v-else>
+      <p>欢迎，{{ currentUser.get('username') }}!</p>
+      <button @click="logout">退出</button>
+      <hr>
+      <h2>Todo List</h2>
+      <form @submit.prevent="addTodo">
+        <input type="text" v-model="newTodo" placeholder="添加新的 Todo">
+        <button type="submit">添加</button>
+      </form>
+      <ul>
+        <li v-for="todo in todos" :key="todo.id">
+            <span v-if="!todo.editing">{{ todo.get('title') }}</span>
+            <input v-else type="text" v-model="todo.updatedTitle">
+          <button @click="deleteTodo(todo)">删除</button>
+          <button @click="toggleEdit(todo)" v-if="!todo.editing">编辑</button>
+          <button @click="saveEdit(todo)" v-else>保存</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    // import { createApp, ref } from 'vue';
+    const { createApp, ref, computed } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    const Todo = Parse.Object.extend("Todo");
+    createApp({
+      setup() {
+        const username = ref('');
+        const password = ref('');
+        const email = ref('');
+        const isLoginForm = ref(true);
+        const error = ref(null);
+        const currentUser = ref(Parse.User.current());
+
+        async function login() {
+          try {
+            await Parse.User.logIn(username.value, password.value);
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        async function signup() {
+          const user = new Parse.User();
+          user.set('username', username.value);
+          user.set('password', password.value);
+          user.set('email', email.value);
+          try {
+            await user.signUp();
+            currentUser.value = Parse.User.current();
+            error.value = null;
+          } catch (e) {
+            error.value = e.message;
+          }
+        }
+
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+        }
+
+
+        const newTodo = ref('');
+        const todos = ref([]);
+
+        async function fetchTodos() {
+          const query = new Parse.Query(Todo);
+          query.equalTo("user", currentUser.value);
+          todos.value = await query.find();
+        }
+
+        async function addTodo() {
+          const todo = new Todo();
+          todo.set("title", newTodo.value);
+          todo.set("user", currentUser.value);
+
+          // 设置 ACL
+          const acl = new Parse.ACL(currentUser.value);
+          acl.setReadAccess(currentUser.value, true);
+          acl.setWriteAccess(currentUser.value, true);
+          todo.setACL(acl);
+
+          await todo.save();
+          newTodo.value = '';
+          fetchTodos();
+        }
+
+        async function deleteTodo(todo) {
+          await todo.destroy();
+          fetchTodos();
+        }
+
+        function toggleEdit(todo) {
+          todo.editing = !todo.editing;
+          if (todo.editing) {
+            todo.updatedTitle = todo.get('title');
+          }
+        }
+
+        async function saveEdit(todo) {
+          todo.set('title', todo.updatedTitle);
+          await todo.save();
+          todo.editing = false;
+        }
+        if (currentUser.value) {
+          fetchTodos();
+        }
+
+        return { 
+          username, password, isLoginForm, error, currentUser, email, 
+          login, signup, logout,
+          newTodo, todos, addTodo, deleteTodo, toggleEdit, saveEdit
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
