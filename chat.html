@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue 3 匿名聊天应用</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #app { width: 500px; margin: 50px auto; }
+    ul { list-style: none; padding: 0; }
+    li { margin-bottom: 10px; }
+    input, button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <li v-for="message in messages" :key="message.id">
+        {{ message.get('text') }}
+      </li>
+    </ul>
+    <form @submit.prevent="sendMessage">
+      <input type="text" v-model="newMessage" placeholder="输入消息">
+      <button type="submit">发送</button>
+    </form>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, onMounted } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+
+    const Message = Parse.Object.extend("Message");
+
+    createApp({
+      setup() {
+        const newMessage = ref('');
+        const messages = ref([]);
+
+        const fetchMessages = async () => {
+          const query = new Parse.Query(Message);
+          query.descending("createdAt");
+          messages.value = await query.find();
+        };
+
+        const sendMessage = async () => {
+          if (!newMessage.value.trim()) return;
+          const message = new Message();
+          message.set('text', newMessage.value);
+
+          await message.save();
+          newMessage.value = '';
+          fetchMessages();
+        };
+
+        onMounted(fetchMessages);
+
+        return { newMessage, messages, sendMessage };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
