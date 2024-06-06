@@ -11,11 +11,17 @@
     ul { list-style: none; padding: 0; }
     li { margin-bottom: 10px; }
     input, button { padding: 10px; }
+    ul {
+        max-height: 400px; /* 可根据需要调整高度 */
+        overflow-y: auto;
+        margin: 0;
+        padding: 0;
+    }
   </style>
 </head>
 <body>
   <div id="app">
-    <ul>
+    <ul ref="messageList">
       <li v-for="message in messages" :key="message.id">
         {{ message.get('text') }}
       </li>
@@ -27,7 +33,7 @@
   </div>
 
   <script type="module">
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref, onMounted, nextTick } = Vue;
 
     // 初始化 Parse
     Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
@@ -39,11 +45,15 @@
       setup() {
         const newMessage = ref('');
         const messages = ref([]);
+        const messageList = ref(null);
 
         const fetchMessages = async () => {
           const query = new Parse.Query(Message);
-          query.descending("createdAt");
+        //   query.descending("createdAt");
+          query.ascending("createdAt")
+          
           messages.value = await query.find();
+          scrollToBottom()
         };
 
         const sendMessage = async () => {
@@ -56,9 +66,17 @@
           fetchMessages();
         };
 
+        const scrollToBottom = () => {
+        nextTick(() => {
+            if (messageList.value) {
+            messageList.value.scrollTop = messageList.value.scrollHeight;
+            }
+        });
+        };
+
         onMounted(fetchMessages);
 
-        return { newMessage, messages, sendMessage };
+        return { newMessage, messages, sendMessage,  messageList: ref(messageList) };
       }
     }).mount('#app');
   </script>
