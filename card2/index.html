@@ -33,7 +33,7 @@
 <body>
     <div id="app">
         <button class="new" @click="createCard">新建</button>
-        <section v-for="card in cards" :class="['card', card.color, { 'pick': card.isEdit, 'edit': card.isEdit }]" @dblclick="editCard(card)" 
+        <section v-for="card in cards" :key="card.id" :class="['card', card.color, { 'pick': card.isEdit, 'edit': card.isEdit }]" @dblclick="editCard(card)" 
         @click="selectCard(card, $event)"            
         @mousedown="startDrag(card, $event)"
         @mouseup="stopDrag(card, $event)" 
@@ -140,7 +140,9 @@
                         card_online.set('left', card.left);
                         card_online.set('color', card.color);
                         card_online.save();
+                        fetchCardsAddUpdateRemote();
                     })
+                    
                 }
 
                 function cardId() {
@@ -178,6 +180,32 @@
                         selectedCard.left = event.clientX - startX;
                         selectedCard.top = event.clientY - startY;
                     }
+                }
+                function fetchCardsAddUpdateRemote() {
+                    fetchCards().then((cards_online) => {
+                        console.log(cards_online)
+                        cards_online.forEach((card) => {
+                            const index = cards.value.findIndex((c) => c.id === card.id);
+                            if (index === -1) {
+                                cards.value.push({
+                                    id: card.id,
+                                    text: card.get('text'),
+                                    color: card.get('color'),
+                                    top: card.get('top'),
+                                    left: card.get('left'),
+                                    selected: false,
+                                    isEdit: false,
+                                    isDragging: false
+                                })
+                            } else {
+                                cards.value[index].text = card.get('text');
+                                cards.value[index].color = card.get('color');
+                                cards.value[index].top = card.get('top');
+                                cards.value[index].left = card.get('left');
+                            }
+                        })
+                    })
+
                 }
 
                 onMounted(() => {
