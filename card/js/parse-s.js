@@ -4,7 +4,7 @@
  */
 // 初始化 Parse
 Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
-Parse.serverURL = 'http://114.242.29.129:28108/parse';
+Parse.serverURL = 'https://parse.glwsq.cn/parse';
 const currentUser = Parse.User.current();
 const Card = Parse.Object.extend("Card");
 async function fetchCards() {

@@ -9,7 +9,7 @@
 <head>
   <title>登录注册+todo</title>
   <script src="https://unpkg.com/vue@3"></script>
-  <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
 </head>
 <body>
   <div id="app">
@@ -57,7 +57,7 @@
 
     // 初始化 Parse
     Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
-    Parse.serverURL = 'http://114.242.29.129:28108/parse';
+    Parse.serverURL = 'https://parse.glwsq.cn/parse';
 
     const Todo = Parse.Object.extend("Todo");
     createApp({
