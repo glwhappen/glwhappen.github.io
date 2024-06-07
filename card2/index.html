@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>卡片界面示例</title>
+    <title>匿名卡片</title>
     <link rel="stylesheet" href="css/s.css">
     <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/parse/dist/parse.min.js"></script>
     <style>
         .new {
             position: fixed;
@@ -29,7 +30,7 @@
 <body>
     <div id="app">
         <button class="new" @click="createCard">新建</button>
-        <section v-for="card in cards" :class="['card', card.color, { pick: card.isDragging }]" @dblclick="editCard(card)" 
+        <section v-for="card in cards" :class="['card', card.color, { 'pick': card.isEdit, 'edit': card.isEdit }]" @dblclick="editCard(card)" 
         @click="selectCard(card, $event)"            
         @mousedown="startDrag(card, $event)"
         @mouseup="stopDrag(card, $event)" 
@@ -38,7 +39,7 @@
             <div class="text" :contenteditable="card.isEdit" ref="cardTextRefs" @blur="updateCardText(card, $event)">{{ card.text }}</div>
             <menu>
                 <a href="#" class="e" @click="editCard(card, $event)" title="编辑"></a>
-                <a href="#" class="c" title="换颜色" @click="changeColor(card)"></a>
+                <a href="#" class="c" title="换颜色" @click.self="changeColor(card)"></a>
                 <a href="#" class="d" title="删除" @click="deleteCard(card)"></a>
             </menu>
         </section>
@@ -46,14 +47,20 @@
 
     <script>
         const { createApp, ref, onMounted, onBeforeUnmount, nextTick } = Vue;
-        
+        // 初始化 Parse
+        Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+        Parse.serverURL = 'https://parse.glwsq.cn/parse';
+        const currentUser = Parse.User.current();
+        const Card = Parse.Object.extend("Card");
+
         createApp({
             setup() {
                 const cardTextRefs = ref([]);
+                let isBodyEdit = ref(false);
 
                 const cards = ref([
-                    { id: 1, text: '第一张卡片', color: 'yellow', top: 20, left: 15, selected: false, isEdit: false, isDragging: false },
-                    { id: 2, text: '第二张卡片', color: 'blue', top: 100, left: 100, selected: false, isEdit: false, isDragging: false }
+                    // { id: 1, text: '第一张卡片', color: 'yellow', top: 20, left: 15, selected: false, isEdit: false, isDragging: false },
+                    // { id: 2, text: '第二张卡片', color: 'blue', top: 100, left: 100, selected: false, isEdit: false, isDragging: false }
                 ]);
                 let selectedCard = null;
                 let startX = 0;
@@ -65,16 +72,23 @@
                     startY = event.clientY - card.top;
                     selectedCard = card;
                 }
-
+                async function fetchCards() {
+                    const query = new Parse.Query(Card);
+                    // query.equalTo("user", currentUser.value);
+                    return await query.find();
+                }
                 function stopDrag() {
                     if (selectedCard) {
                         selectedCard.isDragging = false;
+                        updateCard(selectedCard);
                         selectedCard = null;
                     }
                 }
 
                 function editCard(card, event) {
                     card.isEdit = true;
+                    // isBodyEdit.value = true;
+                    document.getElementsByTagName('body')[0].classList.add('edit');
                     // console.log(event.target.closest('.card').querySelector('.text'))
                     nextTick(() => {
                         const cardElement = event.target.closest('.card');
@@ -87,26 +101,61 @@
                     COLORS = ['white', 'green', 'blue', 'red', 'orange', 'yellow']
                     const index = COLORS.indexOf(card.color);
                     card.color = COLORS[(index + 1) % COLORS.length];
+                    updateCard(card);
+
                 }
 
                 function createCard() {
-                    // console.log(cards)
-                    cards.value.push({
-                        id: cards.value.length + 1,
-                        text: '新建卡片',
-                        color: 'yellow',
-                        top: 100,
-                        left: 120,
-                        selected: false,
-                        isEdit: false,
-                        isDragging: false
+                    // 使用 Parse 保存数据 后的 id
+                    const card = new Card();
+                    document.getElementsByTagName('body')[0].classList.add('edit');
+                    card.set('text', '新建卡片');
+                    card.set('color', 'green');
+                    card.set('top', 120);
+                    card.set('left', 120);
+                    card.save().then((card) => {
+                        cards.value.push({
+                            id: card.id,
+                            text: card.get('text'),
+                            color: card.get('color'),
+                            top: card.get('top'),
+                            left: card.get('left'),
+                            selected: false,
+                            isEdit: true,
+                            isDragging: false
+                        })
+                    })
+
+                }
+                function updateCard(card) {
+                    console.log('updateCard', card)
+                    const query = new Parse.Query(Card);
+                    query.get(card.id).then((card_online) => {
+                        console.log('updateCard', card_online.id, card.id)
+                        card_online.set('text', card.text);
+                        card_online.set('top', card.top);
+                        card_online.set('left', card.left);
+                        card_online.set('color', card.color);
+                        card_online.save();
+                    })
+                }
+
+                function cardId() {
+                    const query = new Parse.Query(Card);
+                    // print id
+                    query.find().then((cards) => {
+                        console.log(cards.id)
                     })
 
                 }
 
                 function updateCardText(card, event) {
+                    card.text = event.target.innerText;
                     console.log('update', card)
                     card.isEdit = false;
+                    // isBodyEdit.value = false;
+                    document.getElementsByTagName('body')[0].classList.remove('edit');
+                    updateCard(card);
                 }
                 function selectCard(card) {
                     card.selected = !card.selected;
@@ -115,6 +164,11 @@
                 function deleteCard(card) {
                     const index = cards.value.indexOf(card);
                     cards.value.splice(index, 1);
+                    const query = new Parse.Query(Card);
+                    query.get(card.id).then((card_online) => {
+                        card_online.destroy();
+                    })
+
                 }
                 function onMouseMove(event) {
                     if (selectedCard && selectedCard.isDragging) {
@@ -126,6 +180,22 @@
                 onMounted(() => {
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', stopDrag);
+                    fetchCards().then((cards_online) => {
+                        console.log(cards_online)
+                        cards_online.forEach((card) => {
+                            cards.value.push({
+                                id: card.id,
+                                text: card.get('text'),
+                                color: card.get('color'),
+                                top: card.get('top'),
+                                left: card.get('left'),
+                                selected: false,
+                                isEdit: false,
+                                isDragging: false
+                            })
+                        })
+                    })
+
                 });
 
                 onBeforeUnmount(() => {

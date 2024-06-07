@@ -53,7 +53,7 @@ a { outline: 0; color: #05C; }
 
 .card {
     position: absolute;
-
+    user-select: none;
     width: 284px;
     min-height: 50px;
     padding: 7px;
