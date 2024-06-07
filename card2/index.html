@@ -6,45 +6,108 @@
     <title>卡片界面示例</title>
     <link rel="stylesheet" href="css/s.css">
     <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        .new {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .new:hover {
+            background-color: #0056b3;
+        }
+        .new:active {
+            background-color: #004286;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
+        <button class="new" @click="createCard">新建</button>
         <section v-for="card in cards" :class="['card', card.color, { pick: card.isDragging }]" @dblclick="editCard(card)" 
-        @click="selectCard(card)"                  
-        @mousedown="startDrag(card)" 
-        @mouseup="stopDrag(card)" 
-        @mouseleave="stopDrag(card)" 
+        @click="selectCard(card, $event)"            
+        @mousedown="startDrag(card, $event)"
+        @mouseup="stopDrag(card, $event)" 
+        @mouseleave="stopDrag(card, $event)" 
          :style="{ top: card.top + 'px', left: card.left + 'px' }">
-            <div class="text">{{ card.text }}</div>
-            <menu v-if="card.selected">
-                <a href="#" class="edit" @click="editCard(card)">编辑</a>
-                <a href="#" class="delete" @click="deleteCard(card)">删除</a>
+            <div class="text" :contenteditable="card.isEdit" ref="cardTextRefs" @blur="updateCardText(card, $event)">{{ card.text }}</div>
+            <menu>
+                <a href="#" class="e" @click="editCard(card, $event)" title="编辑"></a>
+                <a href="#" class="c" title="换颜色" @click="changeColor(card)"></a>
+                <a href="#" class="d" title="删除" @click="deleteCard(card)"></a>
             </menu>
         </section>
     </div>
 
     <script>
-        const { createApp, ref } = Vue;
-
+        const { createApp, ref, onMounted, onBeforeUnmount, nextTick } = Vue;
+        
         createApp({
             setup() {
+                const cardTextRefs = ref([]);
+
                 const cards = ref([
-                    { id: 1, text: '第一张卡片', color: 'yellow', top: 20, left: 15, selected: false, isDragging: false },
-                    { id: 2, text: '第二张卡片', color: 'blue', top: 100, left: 100, selected: false, isDragging: false }
+                    { id: 1, text: '第一张卡片', color: 'yellow', top: 20, left: 15, selected: false, isEdit: false, isDragging: false },
+                    { id: 2, text: '第二张卡片', color: 'blue', top: 100, left: 100, selected: false, isEdit: false, isDragging: false }
                 ]);
-                function startDrag(card) {
+                let selectedCard = null;
+                let startX = 0;
+                let startY = 0;
 
-                    // card.isDragging = true;
+                function startDrag(card, event) {
+                    card.isDragging = true;
+                    startX = event.clientX - card.left;
+                    startY = event.clientY - card.top;
+                    selectedCard = card;
                 }
 
-                function stopDrag(card) {
-                    // card.isDragging = false;
+                function stopDrag() {
+                    if (selectedCard) {
+                        selectedCard.isDragging = false;
+                        selectedCard = null;
+                    }
                 }
 
-                function editCard(card) {
-                    card.text = prompt('编辑卡片文本:', card.text) || card.text;
+                function editCard(card, event) {
+                    card.isEdit = true;
+                    // console.log(event.target.closest('.card').querySelector('.text'))
+                    nextTick(() => {
+                        const cardElement = event.target.closest('.card');
+                        cardElement.querySelector('.text').focus();
+                    })
+
+                    // card.text = prompt('编辑卡片文本:', card.text) || card.text;
+                }
+                function changeColor(card) {
+                    COLORS = ['white', 'green', 'blue', 'red', 'orange', 'yellow']
+                    const index = COLORS.indexOf(card.color);
+                    card.color = COLORS[(index + 1) % COLORS.length];
                 }
 
+                function createCard() {
+                    // console.log(cards)
+                    cards.value.push({
+                        id: cards.value.length + 1,
+                        text: '新建卡片',
+                        color: 'yellow',
+                        top: 100,
+                        left: 120,
+                        selected: false,
+                        isEdit: false,
+                        isDragging: false
+                    })
+
+                }
+
+                function updateCardText(card, event) {
+                    console.log('update', card)
+                    card.isEdit = false;
+                }
                 function selectCard(card) {
                     card.selected = !card.selected;
                 }
@@ -53,8 +116,25 @@
                     const index = cards.value.indexOf(card);
                     cards.value.splice(index, 1);
                 }
+                function onMouseMove(event) {
+                    if (selectedCard && selectedCard.isDragging) {
+                        selectedCard.left = event.clientX - startX;
+                        selectedCard.top = event.clientY - startY;
+                    }
+                }
 
-                return { cards, editCard, selectCard, deleteCard, startDrag, stopDrag };
+                onMounted(() => {
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', stopDrag);
+                });
+
+                onBeforeUnmount(() => {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', stopDrag);
+                });
+
+
+                return { cards, editCard, selectCard, deleteCard, changeColor, startDrag, stopDrag, updateCardText, cardTextRefs, createCard };
             }
         }).mount('#app');
     </script>
