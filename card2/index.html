@@ -38,7 +38,7 @@
         @mousedown="startDrag(card, $event)"
         @mouseup="stopDrag(card, $event)" 
         @mouseleave="stopDrag(card, $event)" 
-         :style="{ top: card.top + 'px', left: card.left + 'px' }">
+         :style="{ top: card.top + 'px', left: card.left + 'px', zIndex: card.zIndex }">
             <div class="text" :contenteditable="card.isEdit" ref="cardTextRefs" @blur="updateCardText(card, $event)">{{ card.text }}</div>
             <menu>
                 <a href="#" class="e" @click="editCard(card, $event)" title="编辑"></a>
@@ -55,7 +55,7 @@
         Parse.serverURL = 'https://parse.glwsq.cn/parse';
         const currentUser = Parse.User.current();
         const Card = Parse.Object.extend("Card");
-
+        let zIndex = 1000;
         createApp({
             setup() {
                 const cardTextRefs = ref([]);
@@ -71,14 +71,17 @@
 
                 function startDrag(card, event) {
                     card.isDragging = true;
+                    card.zIndex = zIndex ++;
                     startX = event.clientX - card.left;
                     startY = event.clientY - card.top;
                     selectedCard = card;
                 }
                 async function fetchCards() {
                     const query = new Parse.Query(Card);
+                    query.ascending("updatedAt");
                     // query.equalTo("user", currentUser.value);
-                    return await query.find();
+                    const cards = await query.find();
+                    return cards;
                 }
                 function stopDrag() {
                     if (selectedCard) {
@@ -119,6 +122,7 @@
                     card.save().then((card) => {
                         cards.value.push({
                             id: card.id,
+                            zIndex: zIndex ++,
                             text: card.get('text'),
                             color: card.get('color'),
                             top: card.get('top'),
@@ -132,6 +136,7 @@
                 }
                 function updateCard(card) {
                     console.log('updateCard', card)
+                    // card['zIndex'] = zIndex ++;
                     const query = new Parse.Query(Card);
                     query.get(card.id).then((card_online) => {
                         console.log('updateCard', card_online.id, card.id)
@@ -145,14 +150,14 @@
                     
                 }
 
-                function cardId() {
-                    const query = new Parse.Query(Card);
-                    // print id
-                    query.find().then((cards) => {
-                        console.log(cards.id)
-                    })
+                // function cardId() {
+                //     const query = new Parse.Query(Card);
+                //     // print id
+                //     query.find().then((cards) => {
+                //         console.log(cards.id)
+                //     })
 
-                }
+                // }
 
                 function updateCardText(card, event) {
                     card.text = event.target.innerText;
@@ -190,6 +195,7 @@
                                 cards.value.push({
                                     id: card.id,
                                     text: card.get('text'),
+                                    zIndex: zIndex ++,
                                     color: card.get('color'),
                                     top: card.get('top'),
                                     left: card.get('left'),
@@ -202,9 +208,11 @@
                                 cards.value[index].color = card.get('color');
                                 cards.value[index].top = card.get('top');
                                 cards.value[index].left = card.get('left');
+                                // cards.value[index].zIndex = zIndex ++;
                             }
                         })
                     })
+                    console.log('123', cards.value)
 
                 }
 
@@ -216,6 +224,7 @@
                         cards_online.forEach((card) => {
                             cards.value.push({
                                 id: card.id,
+                                zIndex: zIndex ++,
                                 text: card.get('text'),
                                 color: card.get('color'),
                                 top: card.get('top'),
