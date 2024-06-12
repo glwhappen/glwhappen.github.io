@@ -42,6 +42,9 @@ function fadeToBlack(count, mastery) {
     if (percentage === 0 && count !== 0) {
       return "#047f0ec6";
     }
+    if (count - mastery >= 2) {
+        return "#ba0909c6";
+      }
     // 将百分比限制在 0-100 之间
     percentage = Math.max(0, Math.min(100, percentage));
     let v = 85 // 85 是灰色
@@ -109,8 +112,7 @@ const app = createApp({
       window.location.href = '/login.html';
     }
     const articles = ref([
-      { title: '文章标题1', content: '文章内容1' },
-      { title: '文章标题2', content: '文章内容2' }
+      { title: '列表加载中', content: '内容加载中' },
     ]);
     const selectedArticle = ref(null);
 

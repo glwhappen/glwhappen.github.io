@@ -133,6 +133,7 @@
     font-size: 24px;
     overflow: auto;
     /* color: #047f0ec6; */
+    /* color: #ba0909c6; */
     white-space: pre-wrap;
     /* font-style:  */
     /* height: 100%; */
@@ -165,4 +166,17 @@
     /* color: red; */
     background-color: rgb(232, 64, 64);
     /* color: #0130059b; */
+  }
+
+  button.mastery {
+    padding: 5px 10px;
+    margin: 10px;
+  }
+  button.mastery:hover {
+    background-color: #66b1ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  button.mastery:active {
+    background-color: #3a8ee6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }

@@ -136,7 +136,7 @@ h3, h4 {
             <div class="progress" :style="{ width: `${selectedUserWord.mastery / selectedUserWord.count * 100}%` }"></div>
           </div>
           <span class="percentage">{{ (selectedUserWord.mastery / selectedUserWord.count * 100).toFixed(0) }}%</span> <br>  
-          <button @click="toMastery(selectedUserWord.word)">掌握</button>
+          <button class="mastery" @click="toMastery(selectedUserWord.word)">现在认识了</button>
         </div>
 
         <div v-if="youdao" class="youdao">
