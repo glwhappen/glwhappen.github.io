@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Vue 3 用户注册登录</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <script src="https://unpkg.com/element-plus"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .column {
+      flex: 1;
+      padding: 20px;
+      border-right: 1px solid #ccc;
+      /* 添加列之间的分隔线 */
+    }
+
+    .column:last-child {
+      border-right: none;
+      /* 最后一列不需要分隔线 */
+    }
+
+    .title-list {
+      max-width: 250px;
+      /* 稍微增加宽度 */
+      overflow-y: auto;
+      background-color: #f5f5f5;
+      /* 浅灰色背景 */
+      border-radius: 8px;
+      /* 圆角边框 */
+      padding: 20px;
+    }
+
+    .title-list h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+      /* 深灰色标题 */
+    }
+
+    .title-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .title-list li {
+      cursor: pointer;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      background-color: #fff;
+      /* 白色背景 */
+      transition: background-color 0.2s;
+      /* 添加悬停过渡效果 */
+    }
+    .title-list li.active { /* 激活样式 */
+      background-color: #e6f7ff; /* 浅蓝色背景 */
+      font-weight: bold; /* 加粗字体 */
+    }
+
+    .title-list li:hover {
+      background-color: #f0f0f0;
+      /* 悬停时变浅灰色 */
+    }
+
+    .title-list button {
+      background-color: #409eff;
+      /* 蓝色按钮 */
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      /* 按钮与标题间距 */
+      width: 100%;
+      /* 按钮宽度占满容器 */
+      font-size: 16px;
+    }
+
+    .article-info {
+      display: flex;
+      flex-direction: column;
+      height: 100%; /* 关键：让 article-info 占据整个列的高度 */
+    }
+
+    .article-info > * { /* article-info 内的所有直接子元素 */
+      margin-bottom: 10px; /* 元素之间的间距 */
+    }
+
+    .article-info > *:last-child { /* 最后一个子元素不加下边距 */
+      margin-bottom: 0; 
+    }
+
+    .article-info input[type="text"],
+    .article-info textarea {
+      /* flex: 1; 填充剩余空间 */
+      width: 100%; 
+      padding: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      box-sizing: border-box; /* 避免 padding 影响计算 */
+    }
+    .article-info textarea {
+      flex: 1;
+      /* height: 100%; */
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="column title-list">
+        <button @click="addArticle">添加文章</button>
+        <h3>文章列表</h3>
+        <ul>
+          <li v-for="article in articles" :class="{'active': selectedArticle && article.id === selectedArticle.id}" @click="selectArticle(article)">{{article.title}}</li>
+        </ul>
+      </div>
+      <div class="column article-info" id="article-info">
+        <h3>文章详情</h3>
+        <input v-if="selectedArticle" type="text" v-model="selectedArticle.title" @change="updateArticle(selectedArticle)"  />
+        <textarea v-if="selectedArticle" name="" id="" v-model="selectedArticle.content" @change="updateArticle(selectedArticle)"></textarea>
+
+      </div>
+      <div class="column article-translation" id="article-translation">
+        <h3>文章翻译</h3>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
+    Parse.serverURL = 'https://parse.glwsq.cn/parse';
+
+    createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        if (!currentUser.value) {
+          window.location.href = '/login.html';
+        }
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+          window.location.href = '/login.html';
+        }
+        const articles = ref([
+          { title: '文章标题1', content: '文章内容1' },
+          { title: '文章标题2', content: '文章内容2' }
+        ]);
+        const selectedArticle = ref(null);
+
+        async function fetchArticles() {
+          const Article = Parse.Object.extend("Articles");
+          const query = new Parse.Query(Article);
+          // query.ascending("updatedAt");
+          // updatedAt 降序
+          query.descending("updatedAt");
+          // 自己创建的
+          query.equalTo('user', currentUser.value);
+
+
+          try {
+            const results = await query.find();
+            articles.value = results.map(article => ({
+              id: article.id,
+              title: article.get('title'),
+              content: article.get('content')
+            }));
+          } catch (error) {
+            console.error('Error while fetching articles', error);
+          }
+        }
+
+
+        function selectArticle(article) {
+          selectedArticle.value = article;
+          // fetchArticleInfo(article);
+          // fetchArticleTranslation(article);
+        }
+        async function updateArticle(article) {
+          console.log(article)
+          const Article = Parse.Object.extend("Articles");
+          const query = new Parse.Query(Article);
+          const articleObj = await query.get(article.id);
+          articleObj.set('title', article.title);
+          articleObj.set('content', article.content);
+          try {
+            await articleObj.save();
+            fetchArticles();
+          } catch (error) {
+            console.error('Error while updating the article', error);
+            ElementPlus.ElMessage.success("更新文章失败")
+          }
+        }
+
+        async function addArticle() {
+          const Article = Parse.Object.extend('Articles');
+          const article = new Article();
+          article.set('title', '新文章标题');
+          article.set('content', '新文章内容');
+          article.set('translation', '新文章翻译');
+          
+          // 设置 ACL
+          const acl = new Parse.ACL(currentUser.value);
+          acl.setReadAccess(currentUser.value, true);
+          acl.setWriteAccess(currentUser.value, true);
+          article.setACL(acl);
+          article.set("user", currentUser.value);
+
+          await article.save();
+          await fetchArticles();
+          ElementPlus.ElMessage.success("添加成功")
+          nextTick(() => {
+            selectedArticle.value = articles.value[0];
+          });
+          
+        }
+        onMounted(() => {
+          fetchArticles();
+        });
+
+        return {
+          currentUser, articles, selectedArticle,
+          logout, addArticle, selectArticle, updateArticle
+        };
+      }
+    }).use(ElementPlus).mount('#app');
+  </script>
+</body>
+
+</html>
