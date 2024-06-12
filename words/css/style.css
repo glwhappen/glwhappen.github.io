@@ -107,6 +107,7 @@
     display: flex;
     flex-direction: column;
     height: 100%; /* 关键：让 article-info 占据整个列的高度 */
+    max-width: 50%;
   }
 
   .article-info > * { /* article-info 内的所有直接子元素 */
