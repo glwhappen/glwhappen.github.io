@@ -325,17 +325,20 @@ const app = createApp({
             console.log('翻译结果:', res);
         })
         // 检查是否是一个单词
+        youdao.value = {}
+        getYoudao(selectedText.value.trim()).then(res => {
+            youdao.value = res
+            console.log('youdao', res)
+        })
         if (selectedText.value.trim().split(' ').length === 1) {
             // 是单词
             const word = selectedText.value.trim();
             if (word == 'span' || word == '' || word == ' ') {
                 return
             }
+            
             console.log('是单词', word)
-            getYoudao(word).then(res => {
-                youdao.value = res
-                console.log('youdao', res)
-            })
+
             // parse 查询class 为 UserWords的用户单词信息，如果存在那么count + 1，否则创建新的单词信息
             const UserWords = Parse.Object.extend('UserWords');
             const query = new Parse.Query(UserWords);
