@@ -101,6 +101,10 @@ h3, h4 {
         <ul>
           <li v-for="article in articles" :class="{'active': selectedArticle && article.id === selectedArticle.id}" @click="selectArticle(article)">{{article.title}}</li>
         </ul>
+        <h3>公开文章列表</h3>
+        <ul>
+          <li v-for="article in publicArticles" :class="{'active': selectedArticle && article.id === selectedArticle.id}" @click="selectArticle(article)">{{article.title}}</li>
+        </ul>
       </div>
       <div class="column article-info" id="article-info">
         <h3>文章详情</h3>
@@ -112,6 +116,7 @@ h3, h4 {
           <button @click="fontSize += 4">增大字体</button>
           <button @click="fontSize -= 2">减小字体</button>
           <button class="danger" @click="deleteArticle">删除文章</button>
+          <button @click="publicArticle(selectedArticle.id)"  v-if="selectedArticle">{{selectedArticle.public ? '不公开文章' : '公开文章'}}</button>
         </div>
       </div> 
       <!-- @click="selectWord" -->

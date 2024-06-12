@@ -1,5 +1,5 @@
 const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
-import {fetchArticles} from './articles.js';
+import {fetchArticles, fetchPublicArticles} from './articles.js';
 import {searchWordHandler} from "./translate.js";
 import {getSyllableSplit, getYoudao} from "./english.js";
 import {findWords} from './word.js'
@@ -136,17 +136,45 @@ const app = createApp({
     const editableRef = ref(null);
     let word_list = ref([])
 
+    // async function getUserWords() {
+    //     const UserWords = Parse.Object.extend('UserWords');
+    //     const query = new Parse.Query(UserWords);
+    //     query.equalTo('user', currentUser.value);
+    //     const userWords = await query.find();
+    //     word_list.value = userWords.map(userWord => ({
+    //         word: userWord.get('word'),
+    //         count: userWord.get('count'),
+    //         mastery: userWord.get('mastery')
+    //     }));
+    // }
     async function getUserWords() {
         const UserWords = Parse.Object.extend('UserWords');
         const query = new Parse.Query(UserWords);
         query.equalTo('user', currentUser.value);
-        const userWords = await query.find();
-        word_list.value = userWords.map(userWord => ({
-            word: userWord.get('word'),
-            count: userWord.get('count'),
-            mastery: userWord.get('mastery')
+        const limit = 100; // 每次查询的限制，可以根据需要调整
+      
+        let allUserWords = [];
+        let skip = 0; // 跳过的数量
+        while (true) {
+          query.limit(limit);
+          query.skip(skip);
+          const userWords = await query.find();
+          allUserWords = allUserWords.concat(userWords);
+      
+          if (userWords.length < limit) {
+            // 如果返回的结果少于 limit，说明已经获取了所有数据
+            break;
+          }
+      
+          skip += limit; // 增加跳过的数量
+        }
+      
+        word_list.value = allUserWords.map(userWord => ({
+          word: userWord.get('word'),
+          count: userWord.get('count'),
+          mastery: userWord.get('mastery')
         }));
-    }
+      }
     async function getUserWord(word) {
         const UserWords = Parse.Object.extend('UserWords');
         const query = new Parse.Query(UserWords);
@@ -192,7 +220,40 @@ const app = createApp({
         ElementPlus.ElMessage.success("更新文章失败")
       }
     }
-
+    async function publicArticle(articleId) {
+        const Article = Parse.Object.extend('Articles');
+        const query = new Parse.Query(Article);
+        const article = await query.get(articleId); // 获取要公开的文章
+      
+        // 检查当前用户是否是文章的作者
+        if (article.get("user").id !== currentUser.value.id) {
+          ElementPlus.ElMessage.error("您没有权限修改此文章");
+          return;
+        }
+        console.log("publicArticle", article)
+        // // 获取当前文章的 ACL
+        // const _public = article.getACL().getPublicReadAccess();
+        // // 设置 ACL，公开文章，但只能读取
+        // const acl = new Parse.ACL();
+        // acl.setPublicReadAccess(!_public);
+        // acl.setPublicWriteAccess(false);
+        // article.setACL(acl);
+            // 获取当前 ACL 并判断是否公开
+        const acl = article.getACL();
+        const isPublic = acl.getPublicReadAccess();
+          // 切换公开状态
+        acl.setPublicReadAccess(!isPublic);
+        article.setACL(acl);
+        try {
+          await article.save();
+          ElementPlus.ElMessage.success(isPublic ? "文章已设为私密" : "文章已公开");
+          // 更新文章列表
+          articles.value = await fetchArticles();
+        } catch (error) {
+          console.error("公开文章失败:", error);
+          ElementPlus.ElMessage.error("公开文章失败");
+        }
+      }
     async function addArticle() {
       const Article = Parse.Object.extend('Articles');
       const article = new Article();
@@ -216,8 +277,11 @@ const app = createApp({
       });
       
     }
+    const publicArticles = ref([]);
     onMounted(async () => {
       articles.value = await fetchArticles();
+      publicArticles.value = await fetchPublicArticles();
+      console.log("公开文章", publicArticles.value)
       nextTick(() =>{
         selectArticle(articles.value[0]);
         // selectedArticle.value = articles.value[0];
@@ -349,7 +413,12 @@ const app = createApp({
                     userWord.increment('count');
                     userWord.save();
                     const index = word_list.value.findIndex(item => item.word === word);
-                    word_list.value[index].count++;
+                    // console.log('index', index)
+                    console.log(word_list.value)
+                    if (index !== -1) {
+                        word_list.value[index].count++;
+
+                    }
                 } else {
                     const userWord = new UserWords();
                     userWord.set('user', currentUser.value);
@@ -406,8 +475,8 @@ const app = createApp({
 
 
     return {
-      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao,
-      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur
+      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles,
+      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle
     };
   }
 })
