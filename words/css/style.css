@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  }
+
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+
+  .column {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    /* 添加列之间的分隔线 */
+  }
+
+  .column:last-child {
+    border-right: none;
+    /* 最后一列不需要分隔线 */
+  }
+
+  .title-list {
+    max-width: 250px;
+    /* 稍微增加宽度 */
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    /* 浅灰色背景 */
+    border-radius: 8px;
+    /* 圆角边框 */
+    padding: 20px;
+  }
+
+  .title-list h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+    /* 深灰色标题 */
+  }
+
+  .title-list ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .title-list li {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #fff;
+    /* 白色背景 */
+    transition: background-color 0.2s;
+    /* 添加悬停过渡效果 */
+  }
+  .title-list li.active { /* 激活样式 */
+    background-color: #e6f7ff; /* 浅蓝色背景 */
+    font-weight: bold; /* 加粗字体 */
+  }
+
+  .title-list li:hover {
+    background-color: #f0f0f0;
+    /* 悬停时变浅灰色 */
+  }
+
+  .title-list button {
+    background-color: #409eff;
+    /* 蓝色按钮 */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    /* 按钮与标题间距 */
+    width: 100%;
+    /* 按钮宽度占满容器 */
+    font-size: 16px;
+  }
+  .title-list button:hover {
+    background-color: #66b1ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .title-list button:active {
+    background-color: #3a8ee6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .article-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 关键：让 article-info 占据整个列的高度 */
+  }
+
+  .article-info > * { /* article-info 内的所有直接子元素 */
+    margin-bottom: 10px; /* 元素之间的间距 */
+  }
+
+  .article-info > *:last-child { /* 最后一个子元素不加下边距 */
+    margin-bottom: 0; 
+  }
+
+  .article-info input[type="text"],
+  .article-info .content {
+    /* flex: 1; 填充剩余空间 */
+    width: 100%; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    box-sizing: border-box; /* 避免 padding 影响计算 */
+  }
+  .article-info .content {
+    flex: 1;
+    font-size: 24px;
+    overflow: auto;
+    /* white-space: pre-wrap; */
+    /* font-style:  */
+    /* height: 100%; */
+  }
+  .article-info .tools {
+    display: flex;
+    /* margin-right: 10px; */
+    justify-content: space-between;
+  }
+  .article-info button {
+    background-color: #409eff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    /* font-size: 16px; */
+  }
+  .article-info button:hover {
+    background-color: #66b1ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .article-info button:active {
+    background-color: #3a8ee6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .article-info button.danger {
+    /* color: red; */
+    background-color: rgb(232, 64, 64);
+  }
