@@ -1,14 +1,46 @@
 const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
 import {fetchArticles} from './articles.js';
 import {searchWordHandler} from "./translate.js";
+import {getSyllableSplit, getYoudao} from "./english.js";
+import {findWords} from './word.js'
 // 初始化 Parse
 Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
 Parse.serverURL = 'https://parse.glwsq.cn/parse';
 
+function deal(article, type = 'times') {
+    // this.article  = this.article.replace(/\. (?!\n\n)/g, '. \n\n');
+
+    const words = findWords(article)
+    if (!words) {
+      showToastError("没有找到单词")
+    //   console.log("没有找到单词")
+      return
+    }
+    this.article_word_list = wordsDeal(words)
+    console.log('article_word_list', this.article_word_list)
+    if (type === 'times') {
+      this.article_word_list = Object.entries(this.article_word_list)
+          .sort((a, b) => b[1].times - a[1].times) // 按照 "times" 属性降序排序
+          .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+          }, {});
+
+    } else {
+      this.article_word_list = Object.entries(this.article_word_list)
+          .sort((a, b) => a[1].index - b[1].index) // 按照 "times" 属性降序排序
+          .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+          }, {});
+    }
+    this.dealWord()
+  }
+
 function fadeToBlack(count, mastery) {
     let percentage = (1 - mastery / count) * 100
     if (percentage === 0 && count !== 0) {
-      return "#0130059b";
+      return "#047f0ec6";
     }
     // 将百分比限制在 0-100 之间
     percentage = Math.max(0, Math.min(100, percentage));
@@ -278,6 +310,7 @@ const app = createApp({
     }
     let selectedTextTrans = ref('');
     let selectedText = ref('');
+    let youdao = ref({})
     function selectionchange() {
       const selection = window.getSelection();
       console.log('adf')
@@ -299,6 +332,10 @@ const app = createApp({
                 return
             }
             console.log('是单词', word)
+            getYoudao(word).then(res => {
+                youdao.value = res
+                console.log('youdao', res)
+            })
             // parse 查询class 为 UserWords的用户单词信息，如果存在那么count + 1，否则创建新的单词信息
             const UserWords = Parse.Object.extend('UserWords');
             const query = new Parse.Query(UserWords);
@@ -364,8 +401,9 @@ const app = createApp({
     }
 
 
+
     return {
-      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery,
+      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao,
       logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur
     };
   }

@@ -33,6 +33,21 @@
     padding: 20px;
   }
 
+
+  .article-translation {
+    overflow: auto;
+  }
+
+  .youdao > hr {
+    /* display: flex;
+    
+    /* 竖着*/
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    /* padding: 10px; */
+  }
+
   .title-list h3 {
     font-size: 18px;
     margin-bottom: 15px;
@@ -110,13 +125,13 @@
     border: 1px solid #ccc;
     resize: vertical;
     box-sizing: border-box; /* 避免 padding 影响计算 */
-    color: #555;
+    color: #444;
   }
   .article-info .content {
     flex: 1;
     font-size: 24px;
     overflow: auto;
-    /* color: #0130059b; */
+    /* color: #047f0ec6; */
     white-space: pre-wrap;
     /* font-style:  */
     /* height: 100%; */

@@ -9,6 +9,81 @@
   <script src="https://unpkg.com/element-plus"></script>
   <script type="module" src="./js/app.js"></script> 
   <link rel="stylesheet" href="./css/style.css">
+  <style>
+.article-translation {
+  /* 整体容器样式 */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+h3, h4 {
+  margin-bottom: 5px;
+}
+
+.selected-text, .selected-text-trans {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+.word-mastery {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+}
+
+.progress {
+  height: 100%;
+  background-color: #4CAF50;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.percentage {
+  margin-left: 10px;
+}
+
+    .youdao {
+      /* 整体容器样式 */
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .separator {
+      /* 分割线样式 */
+      margin: 10px 0;
+      border-color: #eee;
+    }
+    
+    .exam-types span {
+      /* 考试类型标签样式 */
+      margin-right: 5px;
+    }
+    
+    .word-translations .pos {
+      /* 词性样式 */
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    
+    .past-exam-sents .sent {
+      /* 例句容器样式 */
+      margin-bottom: 10px;
+    }
+    
+    .past-exam-sents .en {
+      /* 英文例句样式 */
+      font-style: italic;
+    }
+    </style>
 </head>
 
 <body>
@@ -35,17 +110,85 @@
       </div> 
       <!-- @click="selectWord" -->
       <div class="column article-translation" id="article-translation">
-        <h3>文章翻译</h3>
-        <br>
-        <h4>选中文本：</h4>
-        {{selectedText}}<br>
-        <h4>选中文本翻译：</h4>
-        {{selectedTextTrans}}
 
-        <h4>选中单词掌握程度：</h4>
-        <!-- <span v-if="selectedUserWord">{{selectedUserWord}}</span> -->
-        <span v-if="selectedUserWord">{{selectedUserWord.mastery / selectedUserWord.count * 100}}%</span><br>
-        <button v-if="selectedUserWord" @click="toMastery(selectedUserWord.word)">掌握</button>
+        <h3>文章翻译</h3>
+
+        <h4>选中文本：</h4>
+        <p class="selected-text">{{ selectedText }}</p>
+    
+        <h4>选中文本翻译：</h4>
+        <p class="selected-text-trans">{{ selectedTextTrans }}</p>
+    
+        <div v-if="selectedUserWord" class="word-mastery">
+          <h4>选中单词掌握程度：</h4>
+          <div class="progress-bar">
+            <div class="progress" :style="{ width: `${selectedUserWord.mastery / selectedUserWord.count * 100}%` }"></div>
+          </div>
+          <span class="percentage">{{ (selectedUserWord.mastery / selectedUserWord.count * 100).toFixed(0) }}%</span> <br>  
+          <button @click="toMastery(selectedUserWord.word)">掌握</button>
+        </div>
+
+        <div v-if="youdao" class="youdao">
+          <hr class="separator">
+      
+          <div v-if="youdao.ec && youdao.ec.exam_type" class="exam-types">
+            <span v-for="examType in youdao.ec.exam_type" :key="examType">
+              {{ examType }} |
+            </span>
+          </div>
+      
+          <hr class="separator">
+      
+          <div v-if="youdao.ec && youdao.ec.word" class="word-translations">
+            <div v-for="trs in youdao.ec.word.trs" :key="trs.pos">
+              <span class="pos">{{ trs.pos }}</span>
+              <span class="tran">{{ trs.tran }}</span>
+            </div>
+          </div>
+      
+          <hr class="separator">
+      
+          <div v-if="youdao.individual && youdao.individual.pastExamSents" class="past-exam-sents">
+            <div v-for="sent in youdao.individual.pastExamSents" :key="sent.en" class="sent">
+              <p class="en">{{ sent.en }}</p>
+              <p class="zh">{{ sent.zh }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="column article-words" v-if="false" id="article-words">
+        <h3>文章中的单词</h3>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>
+              顺序
+            </th>
+            <th>
+              单词
+            </th>
+            <th>
+              频率
+            </th>
+            <th>
+              翻译
+            </th>
+            <!-- <th>
+                操作
+            </th> -->
+          </tr>
+          </thead>
+          <tbody id="table-content">
+          <tr v-for="(word, key) in article_word_list_no_remember">
+            <td>{{word.index}}</td>
+            <td class="word" @click="play2(key)" style="font-size: 20px">{{word.show ? (word.syllable ? word.syllable : key) : key}}</td>
+            <td>{{word.times}}</td>
+            <td class='trans' :class="{'trans-hide': !word.show}" @click="remember(key)">{{word.trans}}</td>
+<!--              <td>翻开</td>-->
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 "use strict"
-import {MD5} from "@/utils/utils.js";
-import axios from "axios";
+import {MD5} from "./utils.js";
+// import axios from "axios";
 // 基本工具函数 无需修改---begin
 
 // 转换{b:{index: 0, times: 1}} 为 [{index: 0, word: b, times: 1}]
