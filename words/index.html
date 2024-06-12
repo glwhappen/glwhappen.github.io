@@ -112,7 +112,7 @@ h3, h4 {
         <!-- <textarea v-if="selectedArticle" name="" id="" v-model="selectedArticle.content" @change="updateArticle(selectedArticle)"></textarea> -->
         <div class="content" ref="editableRef" :style="{'fontSize': fontSize + 'px'}" v-if="selectedArticle" @blur="handleBlur()" @mouseup="selectionchange" contenteditable="true" id="editable" @input="updateContent"></div>
         <div class="tools">
-          <button>清理格式</button>
+          <!-- <button>清理格式</button> -->
           <button @click="fontSize += 4">增大字体</button>
           <button @click="fontSize -= 2">减小字体</button>
           <button class="danger" @click="deleteArticle">删除文章</button>
