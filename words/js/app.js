@@ -344,7 +344,7 @@ const app = createApp({
       }
       function cleanHTML4(htmlString) {
         // 匹配所有 HTML 标签（包括自闭合标签），并捕获标签名
-        const tagRegex = /<(\w+)[^>]*\/?>/g;
+        const tagRegex = /<\/?(\w+)[^>]*?\/?>/g;
       
         // 替换标签，并在块级元素后添加换行
         let cleanedText = htmlString.replace(tagRegex, (match, tagName) => {
