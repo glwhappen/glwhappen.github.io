@@ -1,6 +1,6 @@
 
 
-const baseUrl = 'http://39.96.117.53:15000';
+const baseUrl = 'https://auth.ali.glwsq.cn';
 
 /**
  * 获取音节划分
