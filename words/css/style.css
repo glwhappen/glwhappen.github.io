@@ -110,12 +110,14 @@
     border: 1px solid #ccc;
     resize: vertical;
     box-sizing: border-box; /* 避免 padding 影响计算 */
+    color: #555;
   }
   .article-info .content {
     flex: 1;
     font-size: 24px;
     overflow: auto;
-    /* white-space: pre-wrap; */
+    /* color: #0130059b; */
+    white-space: pre-wrap;
     /* font-style:  */
     /* height: 100%; */
   }
@@ -124,6 +126,7 @@
     /* margin-right: 10px; */
     justify-content: space-between;
   }
+  .article-translation button,
   .article-info button {
     background-color: #409eff;
     color: white;
@@ -145,4 +148,5 @@
   .article-info button.danger {
     /* color: red; */
     background-color: rgb(232, 64, 64);
+    /* color: #0130059b; */
   }

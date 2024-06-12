@@ -1,22 +1,27 @@
 const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
 import {fetchArticles} from './articles.js';
+import {searchWordHandler} from "./translate.js";
 // 初始化 Parse
 Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
 Parse.serverURL = 'https://parse.glwsq.cn/parse';
 
-function fadeToBlack(percentage) {
+function fadeToBlack(count, mastery) {
+    let percentage = (1 - mastery / count) * 100
+    if (percentage === 0 && count !== 0) {
+      return "#0130059b";
+    }
     // 将百分比限制在 0-100 之间
     percentage = Math.max(0, Math.min(100, percentage));
-  
+    let v = 85 // 85 是灰色
     // 计算 RGB 分量的变化值
-    const rChange = Math.round((85 - 0) * (percentage / 100));
-    const gChange = Math.round((85 - 0) * (percentage / 100));
-    const bChange = Math.round((85 - 0) * (percentage / 100));
+    const rChange = Math.round((v - 0) * (percentage / 100));
+    const gChange = Math.round((v - 0) * (percentage / 100));
+    const bChange = Math.round((v - 0) * (percentage / 100));
   
     // 计算新的 RGB 值
-    const newR = 85 - rChange;
-    const newG = 85 - gChange;
-    const newB = 85 - bChange;
+    const newR = v - rChange;
+    const newG = v - gChange;
+    const newB = v - bChange;
   
     // 将 RGB 值转换为十六进制颜色
     const newHex = "#" + ((newR << 16) | (newG << 8) | newB).toString(16).padStart(6, "0");
@@ -30,6 +35,34 @@ function getMasteryColor(masteryPercentage) {
     const lightness = 50; 
     // 返回 HSL 颜色字符串
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`; 
+  }
+
+
+function play(text, style='英式') {
+
+    let type = 0
+    if (style === '英式') {
+      type = 1
+    } else if (style === '美式') {
+      type = 2
+    } else {
+      return
+    }
+    var voice = document.getElementById('voice'); //获取到audio元素
+    voice.src = 'http://dict.youdao.com/dictvoice?type=' + type + '&audio=' + text;
+    if (voice.paused) { //判断音乐是否在播放中，暂停状态
+      nextTick(() => {
+        voice.play().catch(error => {
+          voice.src = 'http://dict.youdao.com/dictvoice?type=' + type + '&audio=' + text;
+          console.log(`重试播放失败: ${text},${voice.src}, ${error}`);
+          voice.play().catch(e => console.error(`重试播放失败: ${text}, ${e}`));
+        });
+      })
+
+
+    } else { //播放状态
+      voice.pause(); //音乐停止
+    }
   }
 
 const app = createApp({
@@ -69,30 +102,41 @@ const app = createApp({
     }
 
     const editableRef = ref(null);
+    let word_list = ref([])
 
+    async function getUserWords() {
+        const UserWords = Parse.Object.extend('UserWords');
+        const query = new Parse.Query(UserWords);
+        query.equalTo('user', currentUser.value);
+        const userWords = await query.find();
+        word_list.value = userWords.map(userWord => ({
+            word: userWord.get('word'),
+            count: userWord.get('count'),
+            mastery: userWord.get('mastery')
+        }));
+    }
+    async function getUserWord(word) {
+        const UserWords = Parse.Object.extend('UserWords');
+        const query = new Parse.Query(UserWords);
+        query.equalTo('user', currentUser.value);
+        query.equalTo('word', word);
+        return await query.first();
+    }
+    // selectedUserWord 计算属性
+    const selectedUserWord = computed(() => word_list.value.find(word => word.word === selectedText.value.trim()));
+    // 判断选中的是否是单词 计算属性
+    const isWordSelected = computed(() => selectedText.value.trim().split(' ').length === 1);
 
     function selectArticle(article) {
       selectedArticle.value = article;
-      nextTick(() => {
-        let word_list = [{
-            word: 'apple',
-            // 查询次数
-            count: 5,
-            // 掌握程度
-            mastery: 5
-        },{
-            word: 'Hawking',
-            // 查询次数
-            count: 10,
-            // 掌握程度
-            mastery: 10
-        }];
-
+      
+      nextTick(async () => {
+        await getUserWords();
         let content = article.content;
         
-        for (const word of word_list) {
+        for (const word of word_list.value) {
           const regex = new RegExp(`\\b${word.word}\\b`, 'gi'); // 动态生成正则表达式
-          content = content.replace(regex, `<span class="word" style="color: ${fadeToBlack((1 - word.mastery / word.count) * 100)};">${word.word}</span>`);
+          content = content.replace(regex, `<span class="word word-${word.word}" style="color: ${fadeToBlack(word.count, word.mastery)};">${word.word}</span>`);
         }
         
         editableRef.value.innerHTML = content;
@@ -148,7 +192,7 @@ const app = createApp({
       })
     });
 
-    let fontSize = ref(16);
+    let fontSize = ref(24);
     
     // function highlightApple() {
     //   this.$nextTick(() => {
@@ -157,37 +201,184 @@ const app = createApp({
     //     editable.innerHTML = editable.textContent.replace(regex, '<span style="color: green;">apple</span>');
     //   });
     // }
+    function cleanHTML2(htmlString) {
+        // 替换 <span> 标签
+        htmlString = htmlString.replace(/<span[^>]*>(.*?)<\/span>/gs, '$1');
+      
+        // 替换 <p> 标签，并在每个 <p> 标签内容后添加换行符
+        htmlString = htmlString.replace(/<p[^>]*>(.*?)<\/p>/gs, '$1\n');
+      
+        return htmlString.trim(); // 去除首尾多余的空格和换行
+      }
+    function cleanHTML(htmlString) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        const iterator = document.createNodeIterator(doc.body, NodeFilter.SHOW_ELEMENT);
+      
+        let textContent = '1';
+        let node;
+        while (node = iterator.nextNode()) {
+          // 如果是 <p> 标签或其他换行标签，添加换行
+          if (node.nodeName === 'P' || getComputedStyle(node).display === 'block') {
+            textContent += '\n';
+          }
+          console.log('nodeType', node.nodeType, node.innerHTML, node.nodeName)
+      
+          // 如果节点是文本节点，添加其文本内容
+          if (node.nodeType === Node.TEXT_NODE) {
+            textContent += node.nodeValue;
+          }
+        }
+        console.log(htmlString, textContent)
+        return textContent.trim(); // 去除首尾多余的换行
+      }
+      function cleanHTML3(htmlString) {
+        // 移除所有 HTML 标签和属性，但保留换行符
+        let cleanedText = htmlString.replace(/<[^>]+>/g, '');
+      
+        // 规范化空白字符（保留换行）
+        cleanedText = cleanedText
+          .replace(/&nbsp;/g, ' ') // 将 &nbsp; 替换为空格
+          .replace(/\t/g, ' ')    // 将制表符替换为空格
+          .replace(/ +/g, ' ');  // 将多个连续的空格合并为一个
+      
+        return cleanedText;
+      }
+      function cleanHTML4(htmlString) {
+        // 匹配所有 HTML 标签（包括自闭合标签），并捕获标签名
+        const tagRegex = /<(\w+)[^>]*\/?>/g;
+      
+        // 替换标签，并在块级元素后添加换行
+        let cleanedText = htmlString.replace(tagRegex, (match, tagName) => {
+          // 块级元素列表（可以根据需要添加更多标签）
+          const blockElements = ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'pre'];
+      
+          // 如果是块级元素，则在后面添加换行
+          if (blockElements.includes(tagName.toLowerCase())) {
+            return '\n';
+          } else {
+            return ''; // 否则直接移除标签
+          }
+        });
+      
+        // 规范化空白字符（保留换行）
+        cleanedText = cleanedText
+        //   .replace(/&nbsp;/g, ' ') // 将 &nbsp; 替换为空格
+        //   .replace(/\t/g, ' ')    // 将制表符替换为空格
+        //   .replace(/ +/g, ' ');  // 将多个连续的空格合并为一个
+      
+        return cleanedText.trim(); // 去除首尾多余的空格和换行
+      }
     function updateContent() {
-      // selectedArticle.value.content = editableRef.value.textContent;
-      selectedArticle.value.content = editableRef.value.innerHTML.replace(/<span class="word"[^>]*>|<\/span>/g, '');
+    //   selectedArticle.value.content = editableRef.value.textContent;
+    //   selectedArticle.value.content = editableRef.value.innerHTML.replace(/<span class="word"[^>]*>|<\/span>/g, '');
+      selectedArticle.value.content = cleanHTML4(editableRef.value.innerHTML)
+      console.log('selectedArticle.value.content', selectedArticle.value.content)
       updateArticle(selectedArticle.value);
     }
+    let selectedTextTrans = ref('');
+    let selectedText = ref('');
     function selectionchange() {
       const selection = window.getSelection();
       console.log('adf')
       if (!selection.isCollapsed) {
         // 选区不为空，且在 editableRef 元素内
-        const selectedText = selection.toString();
-        console.log('选中的文本:', selectedText);
+        selectedText.value = selection.toString();
+        console.log('选中的文本:', selectedText.value);
         // 在这里执行您想要的操作
+        play(selectedText.value)
+        searchWordHandler(selectedText.value).then(res => {
+            selectedTextTrans.value = res
+            console.log('翻译结果:', res);
+        })
+        // 检查是否是一个单词
+        if (selectedText.value.trim().split(' ').length === 1) {
+            // 是单词
+            const word = selectedText.value.trim();
+            if (word == 'span' || word == '' || word == ' ') {
+                return
+            }
+            console.log('是单词', word)
+            // parse 查询class 为 UserWords的用户单词信息，如果存在那么count + 1，否则创建新的单词信息
+            const UserWords = Parse.Object.extend('UserWords');
+            const query = new Parse.Query(UserWords);
+            query.equalTo('user', currentUser.value);
+            query.equalTo('word', word);
+            query.first().then(userWord => {
+                if (userWord) {
+                    userWord.increment('count');
+                    userWord.save();
+                    const index = word_list.value.findIndex(item => item.word === word);
+                    word_list.value[index].count++;
+                } else {
+                    const userWord = new UserWords();
+                    userWord.set('user', currentUser.value);
+                    userWord.set('word', word);
+                    userWord.set('count', 1);
+                    userWord.set('mastery', 0);
+                    // 设置 ACL
+                    const acl = new Parse.ACL(currentUser.value);
+                    acl.setReadAccess(currentUser.value, true);
+                    acl.setWriteAccess(currentUser.value, true);
+                    userWord.setACL(acl);
+
+                    userWord.save();
+                    word_list.value.push({
+                        word: word,
+                        count: 1,
+                        mastery: 0
+                    });
+
+                }
+            });
+
+        }
       }
+    }
+    
+    function handleBlur() {
+        console.log('blur')
+        let voice = document.getElementById('voice'); //获取到audio元素
+        if (!voice.paused) {
+          voice.pause(); //音乐停止
+        }
+
+    }
+    function toMastery(word) {
+        // 选中的单词 mastery == count
+        const UserWords = Parse.Object.extend('UserWords');
+        const query = new Parse.Query(UserWords);
+        query.equalTo('user', currentUser.value);
+        query.equalTo('word', word);
+        query.first().then(userWord => {
+            if (userWord) {
+                // 让 mastery 等于 count
+                userWord.set('mastery', userWord.get('count'));
+                userWord.save();
+                const index = word_list.value.findIndex(item => item.word === word);
+                word_list.value[index].mastery = userWord.get('count');
+
+            
+            }
+        });
     }
 
 
-
     return {
-      currentUser, articles, selectedArticle,fontSize,
-      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle
+      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery,
+      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur
     };
   }
 })
 
-app.use(createApp({
-    setup() {
-        onMounted = async () => {
-            console.log("123")
-        }
-    }
-}))
+// app.use(createApp({
+//     setup() {
+//         onMounted = async () => {
+//             console.log("123")
+//         }
+//     }
+// }))
 
 app.use(ElementPlus).mount('#app');
+
+
