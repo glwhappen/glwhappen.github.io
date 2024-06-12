@@ -198,6 +198,9 @@ const app = createApp({
         
         for (const word of word_list.value) {
           const regex = new RegExp(`\\b${word.word}\\b`, 'gi'); // 动态生成正则表达式
+          // if(('' + word.word).find('-') != -1) {
+            console.log("word", word)
+          // }
           content = content.replace(regex, `<span class="word word-${word.word}" style="color: ${fadeToBlack(word.count, word.mastery)};">${word.word}</span>`);
         }
         
@@ -399,7 +402,7 @@ const app = createApp({
         if (selectedText.value.trim().split(' ').length === 1) {
             // 是单词
             const word = selectedText.value.trim();
-            if (word == 'span' || word == '' || word == ' ') {
+            if (word == 'span' || word == '' || word == ' ' || word == '-') {
                 return
             }
             
