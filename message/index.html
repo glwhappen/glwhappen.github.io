@@ -32,7 +32,7 @@
     <form @submit.prevent="sendMessage">
       <input type="text" v-model="newMessage" placeholder="输入消息" v-if="currentUser">
       <button type="submit" v-if="currentUser">发送</button>
-      <p v-else>请登录后再发送消息。</p>
+      <p v-else>请<a href="/login.html">登录</a>后再发送消息。<a href="/">回首页</a></p>
     </form>
   </div>
 
