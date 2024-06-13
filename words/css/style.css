@@ -143,23 +143,31 @@
     /* margin-right: 10px; */
     justify-content: space-between;
   }
-  .article-translation span {
+.article-translation .selected-text {
+  font-size: 20px;
+}
+.article-translation .selected-text span[id^="f"] {
     margin: 0 5px;
+    /* 加一个浅浅的下划线 */
+    /* text-decoration: underline; */
+    /* background-color: #f8f8f6;
+     */
+    color: #33b25f;
     cursor: pointer;
 }
-.article-translation span:hover {
+.article-translation .selected-text span[id^="f"]:hover {
     background-color: lightyellow;
 }
 
-.article-translation .bb {
+.article-translation .selected-text span[id^="f"].bb {
   font-weight: bold;
   color: blue;
 }
-.article-translation .bl {
+.article-translation .selected-text span[id^="f"].bl {
   color: blue;
 }
 
-.article-translation .rd {
+.article-translation .selected-text span[id^="f"].rd {
   color: red;
 }
 
