@@ -143,6 +143,26 @@
     /* margin-right: 10px; */
     justify-content: space-between;
   }
+  .article-translation span {
+    margin: 0 5px;
+    cursor: pointer;
+}
+.article-translation span:hover {
+    background-color: lightyellow;
+}
+
+.article-translation .bb {
+  font-weight: bold;
+  color: blue;
+}
+.article-translation .bl {
+  color: blue;
+}
+
+.article-translation .rd {
+  color: red;
+}
+
   .article-translation button,
   .article-info button {
     background-color: #409eff;

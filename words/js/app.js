@@ -3,6 +3,7 @@ import {fetchArticles, fetchPublicArticles} from './articles.js';
 import {searchWordHandler} from "./translate.js";
 import {getSyllableSplit, getYoudao} from "./english.js";
 import {findWords} from './word.js'
+import {jieba} from './jujigeba.js'
 // 初始化 Parse
 Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
 Parse.serverURL = 'https://parse.glwsq.cn/parse';
@@ -380,6 +381,7 @@ const app = createApp({
     let selectedTextTrans = ref('');
     let selectedText = ref('');
     let youdao = ref({})
+    let jujigeba_html = ref('')
     function selectionchange() {
       const selection = window.getSelection();
       console.log('adf')
@@ -395,6 +397,7 @@ const app = createApp({
         })
         // 检查是否是一个单词
         youdao.value = {}
+        jujigeba_html.value = ''
         getYoudao(selectedText.value.trim()).then(res => {
             youdao.value = res
             console.log('youdao', res)
@@ -446,6 +449,58 @@ const app = createApp({
                 }
             });
 
+        } else {
+          jieba(selectedText.value).then(res => {
+            console.log('jieba', res)
+            if (res == {}) return
+            jujigeba_html.value = res.html
+            nextTick(() => {
+              let pos = 0
+              let descriptions = JSON.parse(res.descriptions)
+              // let descriptions = res.descriptions
+
+              res.analysis.split('||').forEach(part => {
+                  const elements = part.split('|');
+                  const index = elements[0];
+                  const grammarId = elements[1];
+                  console.log("grammarId", grammarId, index)
+      
+                  // const element = document.getElementById('f' + pos++);
+                  // if (element) {
+                  //     element.title = item.description;
+                  // }
+      
+                  const desc = descriptions.find(d => d.d === grammarId);
+                  if (desc) {
+                      const element = document.getElementById('f' + pos++);
+                      if (element) {
+                          let m = desc.m
+                          if (!m) {
+                              m = ''
+                          }
+                          if (m.includes('*')) {
+                              m = m.replace('*', '\n')
+                          }
+                          let t = desc.t
+                          let g = desc.g
+                          if (!t) {
+                              element.title = `${desc.g}`;
+                          } else {
+                              if (g) {
+                                  element.title = `${desc.g}: \n${desc.t} ${m}`;
+                              } else {
+                                  element.title = `${desc.t} ${m}`;
+                              }
+                              
+                          }
+                      }
+                  }
+              });
+          
+
+            })
+          })
+
         }
       }
     }
@@ -481,7 +536,8 @@ const app = createApp({
 
     return {
       currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles,
-      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle
+      logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle,
+      jujigeba_html
     };
   }
 })
