@@ -348,6 +348,17 @@ const app = createApp({
       
         return cleanedText;
       }
+      function isWordF(word) {
+        // 正则表达式匹配由字母组成的单词
+        const regex = /^[A-Za-z]+$/;
+    
+        // 判断word是否匹配正则表达式
+        if (!regex.test(word)) {
+            return false; // 如果不是单词，返回false
+        }
+    
+        return true; // 如果是单词，返回true
+    }
       function cleanHTML4(htmlString) {
         // 匹配所有 HTML 标签（包括自闭合标签），并捕获标签名
         const tagRegex = /<\/?(\w+)[^>]*?\/?>/g;
@@ -415,6 +426,10 @@ const app = createApp({
             if (word == 'span' || word == '' || word == ' ' || word == '-') {
                 return
             }
+
+          if (!isWordF(word)) {
+            return 
+          }
             
             console.log('是单词', word)
 
