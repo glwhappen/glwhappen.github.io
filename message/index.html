@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加视口元标签 -->
   <title>Vue 3 实名留言板应用</title>
-  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
   <style>
     body {
@@ -73,18 +73,19 @@
 
 <body>
   <div id="app">
-    <a href="/">回首页</a>
+    
     <ul ref="messageList">
       <li v-for="message in messages" :key="message.id">
         <span class="message-author">{{ message.get('author') }}:</span> {{ message.get('text') }}
-        <button v-if="message.get('ACL') && message.get('ACL').getWriteAccess(currentUser.id)" class="delete-button"
+        <button v-if="currentUser && message.get('ACL') && message.get('ACL').getWriteAccess(currentUser.id)" class="delete-button"
           @click="deleteMessage(message)">删除</button>
       </li>
     </ul>
     <form @submit.prevent="sendMessage">
       <input type="text" v-model="newMessage" placeholder="输入消息" v-if="currentUser">
       <button type="submit" v-if="currentUser">发送</button>
-      <p v-else>请<a href="/login.html">登录</a>后再发送消息。<a href="/">回首页</a></p>
+      <p v-else>请<a href="/login.html">登录</a>后再发送消息。</p>
+      <a href="/">回首页</a>
     </form>
   </div>
 
@@ -109,6 +110,8 @@
           query.ascending("createdAt");
 
           messages.value = await query.find();
+          
+          // console.log(messages.value, messages.value[0].get('ACL').getWriteAccess(currentUser.id))
           scrollToBottom();
         };
 
