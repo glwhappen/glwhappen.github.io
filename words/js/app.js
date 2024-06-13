@@ -197,13 +197,24 @@ const app = createApp({
         await getUserWords();
         let content = article.content;
         
+        // for (const word of word_list.value) {
+        //   const regex = new RegExp(`\\b${word.word}\\b`, 'gi'); // 动态生成正则表达式
+        //   // if(('' + word.word).find('-') != -1) {
+        //     console.log("word", word)
+        //   // }
+        //   content = content.replace(regex, `<span class="word word-${word.word}" style="color: ${fadeToBlack(word.count, word.mastery)};">${word.word}</span>`);
+        // }
+
         for (const word of word_list.value) {
-          const regex = new RegExp(`\\b${word.word}\\b`, 'gi'); // 动态生成正则表达式
-          // if(('' + word.word).find('-') != -1) {
-            console.log("word", word)
-          // }
-          content = content.replace(regex, `<span class="word word-${word.word}" style="color: ${fadeToBlack(word.count, word.mastery)};">${word.word}</span>`);
+          const regex = new RegExp(`\\b${word.word}\\b`, 'gi');
+          content = content.replace(regex, `__PLACEHOLDER_${word.word}__`);
         }
+        
+        for (const word of word_list.value) {
+          const placeholderRegex = new RegExp(`__PLACEHOLDER_${word.word}__`, 'g');
+          content = content.replace(placeholderRegex, `<span class="word word-${word.word}" style="color: ${fadeToBlack(word.count, word.mastery)};">${word.word}</span>`);
+        }
+
         
         editableRef.value.innerHTML = content;
 
