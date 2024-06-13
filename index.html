@@ -51,20 +51,21 @@
         <img src="https://icons.iconarchive.com/icons/papirus-team/papirus-apps/256/github-icon.png" alt="GitHub" style="height: 30px;">
       </a>
     </div> -->
-    <h2>Happen Tools</h2>
+    <h2>Happen's Tools</h2>
     <p class="project-description">
-      <span v-if="currentUser">你好, {{ currentUser.get('username') }}!<span> 我会将我写的一些好玩的项目放到这里，欢迎体验！这些项目均在GitHub开源。
+      <span v-if="currentUser">你好, {{ currentUser.get('username') }}!</span> 我会将写的一些好玩的项目放到这里，欢迎体验！这些项目均在GitHub开源。
     </p>
     项目介绍：
     <ul>
-      <li>背单词：从文章中提取并学习单词</li>
+      <li>背单词：从文章中提取并学习单词 电脑版</li>
       <li>留言板：提供反馈或留言</li>
+      <li>匿名卡片：无需登录，任意粘贴小卡片 电脑版 测试中</li>
     </ul>
     <br>
     <!-- <p class="welcome-message"></p> -->
     <br>
-    <a href="/words">去背单词</a>
-    <a href="/message">去留言反馈</a>
+    <a href="/words">背单词</a>
+    <a href="/message">留言反馈</a>
     <a href="/card2">匿名卡片</a>
     <br><br>
     <el-button v-if="currentUser" @click="logout">退出登录</el-button>
