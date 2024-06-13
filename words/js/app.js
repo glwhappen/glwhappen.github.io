@@ -559,7 +559,8 @@ const app = createApp({
                 userWord.save();
                 const index = word_list.value.findIndex(item => item.word === word);
                 word_list.value[index].mastery = userWord.get('count');
-
+                // 刷新文章内容
+                selectArticle(selectedArticle.value);
             
             }
         });
