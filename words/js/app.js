@@ -206,7 +206,7 @@ const app = createApp({
         // }
 
         for (const word of word_list.value) {
-          const regex = new RegExp(`\\b${word.word}\\b`, 'gi');
+          const regex = new RegExp(`\\b${word.word}\\b`, 'g');
           content = content.replace(regex, `__PLACEHOLDER_${word.word}__`);
         }
         
