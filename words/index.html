@@ -168,10 +168,14 @@ h3, h4 {
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="word_list">
+          查询过的单词数量: {{ word_list.length }} <br>
+          记住的单词数量: {{ word_list.filter(word => word.count === word.mastery).length }} <br>
+        </div>
+        <div v-if="!selectedText">
           解释：<br>
-          绿色的单词表示目前记住了的 <br>
-          红色的单词表示目前查看了多次，但是还没有记住的 <br>
+          <!-- 绿色的单词表示目前记住了的 <br> -->
+          红色的单词表示目前查看了多次，但是还没有记住的 <br> <br>  
           双击单词可以查看单词的翻译 <br>
           选中句子可以查看句子的翻译和语法分析 <br>
         </div>

@@ -39,12 +39,17 @@ function deal(article, type = 'times') {
   }
 
 function fadeToBlack(count, mastery) {
+  
     let percentage = (1 - mastery / count) * 100
-    if (percentage === 0 && count !== 0) {
-      return "#047f0ec6";
-    }
+
     if (count - mastery >= 2) {
         return "#ba0909c6";
+      }
+
+      return '#333'
+
+      if (percentage === 0 && count !== 0) {
+        return "#047f0ec6";
       }
     // 将百分比限制在 0-100 之间
     percentage = Math.max(0, Math.min(100, percentage));
@@ -569,7 +574,7 @@ const app = createApp({
 
 
     return {
-      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles,
+      currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles, word_list,
       logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle,
       jujigeba_html
     };
