@@ -213,17 +213,19 @@ const app = createApp({
     }
     async function updateArticle(article) {
       console.log(article)
+      
       const Article = Parse.Object.extend("Articles");
       const query = new Parse.Query(Article);
       const articleObj = await query.get(article.id);
       articleObj.set('title', article.title);
       articleObj.set('content', article.content);
+      
       try {
         await articleObj.save();
         articles.value =await fetchArticles();
       } catch (error) {
         console.error('Error while updating the article', error);
-        ElementPlus.ElMessage.success("更新文章失败")
+        ElementPlus.ElMessage.error("更新文章失败")
       }
     }
     async function publicArticle(articleId) {
@@ -398,10 +400,15 @@ const app = createApp({
         // 检查是否是一个单词
         youdao.value = {}
         jujigeba_html.value = ''
-        getYoudao(selectedText.value.trim()).then(res => {
-            youdao.value = res
-            console.log('youdao', res)
-        })
+        // 小于3个单词，再调用有道翻译
+        if (selectedText.value.trim().split(' ').length <= 7) {
+          getYoudao(selectedText.value.trim()).then(res => {
+              youdao.value = res
+              console.log('youdao', res)
+          })
+        }
+
+        
         if (selectedText.value.trim().split(' ').length === 1) {
             // 是单词
             const word = selectedText.value.trim();
