@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue 3 实名留言板应用</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; }
+    #app { width: 600px; margin: 50px auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    ul { list-style: none; padding: 0; }
+    li { margin-bottom: 10px; background: #e9ecef; padding: 10px; border-radius: 5px; position: relative; }
+    input, button { padding: 10px; margin-right: 8px; }
+    button { background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .message-author { font-weight: bold; }
+    .delete-button { position: absolute; top: 10px; right: 10px; background-color: #dc3545; }
+    ul {
+        max-height: 400px; /* 可根据需要调整高度 */
+        overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <ul ref="messageList">
+      <li v-for="message in messages" :key="message.id">
+        <span class="message-author">{{ message.get('author') }}:</span> {{ message.get('text') }}
+        <button v-if="message.get('ACL') && message.get('ACL').getWriteAccess(currentUser.id)" class="delete-button" @click="deleteMessage(message)">删除</button>
+      </li>
+    </ul>
+    <form @submit.prevent="sendMessage">
+      <input type="text" v-model="newMessage" placeholder="输入消息" v-if="currentUser">
+      <button type="submit" v-if="currentUser">发送</button>
+      <p v-else>请登录后再发送消息。</p>
+    </form>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'https://parse.glwsq.cn/parse';
+
+    const Message = Parse.Object.extend("Message");
+
+    createApp({
+      setup() {
+        const newMessage = ref('');
+        const messages = ref([]);
+        const messageList = ref(null);
+        const currentUser = ref(Parse.User.current());
+        console.log(currentUser.value)
+        const fetchMessages = async () => {
+          const query = new Parse.Query(Message);
+          query.ascending("createdAt");
+
+          messages.value = await query.find();
+          scrollToBottom();
+        };
+
+        const sendMessage = async () => {
+          if (!currentUser.value || !newMessage.value.trim()) return;
+          const message = new Message();
+          message.set('text', newMessage.value);
+          message.set('author', currentUser.value.getUsername());
+
+          const acl = new Parse.ACL(currentUser.value);
+          acl.setPublicReadAccess(true) // 公共读权限
+          acl.setWriteAccess(currentUser.value, true); // 仅作者有写权限
+          message.setACL(acl);
+
+
+          await message.save();
+          newMessage.value = '';
+          fetchMessages();
+        };
+
+        const deleteMessage = async (message) => {
+          await message.destroy();
+          fetchMessages();
+        };
+
+        const scrollToBottom = () => {
+        nextTick(() => {
+            if (messageList.value) {
+            messageList.value.scrollTop = messageList.value.scrollHeight;
+            }
+        });
+        };
+
+        onMounted(fetchMessages);
+
+        return { newMessage, messages, sendMessage, deleteMessage, messageList: ref(messageList), currentUser };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
