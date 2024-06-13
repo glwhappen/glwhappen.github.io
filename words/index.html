@@ -129,14 +129,16 @@ h3, h4 {
         <p class="selected-text" v-else>{{ selectedText }}</p>
         <h4>选中文本翻译：</h4>
         <p class="selected-text-trans">{{ selectedTextTrans }}</p>
-    
+        
         <div v-if="selectedUserWord" class="word-mastery">
+          <button class="mastery" @click="toMastery(selectedUserWord.word)">现在认识了</button>
           <h4>选中单词掌握程度：</h4>
           <div class="progress-bar">
             <div class="progress" :style="{ width: `${selectedUserWord.mastery / selectedUserWord.count * 100}%` }"></div>
           </div>
-          <span class="percentage">{{ (selectedUserWord.mastery / selectedUserWord.count * 100).toFixed(0) }}%</span> <br>  
-          <button class="mastery" @click="toMastery(selectedUserWord.word)">现在认识了</button>
+          <span>掌握程度: {{ (selectedUserWord.mastery / selectedUserWord.count * 100).toFixed(0) }}%</span> <br> 
+          <span>查看次数: {{selectedUserWord.count}}</span> <br>
+          
         </div>
 
         <div v-if="youdao" class="youdao">
