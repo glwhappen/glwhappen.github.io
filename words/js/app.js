@@ -2,6 +2,7 @@ const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
 import {fetchArticles, fetchPublicArticles} from './articles.js';
 import {searchWordHandler} from "./translate.js";
 import {getSyllableSplit, getYoudao} from "./english.js";
+import {fixBrokenSentences} from './fixBrokenSentences.js'
 import {findWords} from './word.js'
 import {jieba} from './jujigeba.js'
 // 初始化 Parse
@@ -226,6 +227,12 @@ const app = createApp({
       })
       // fetchArticleInfo(article);
       // fetchArticleTranslation(article);
+    }
+    async function fixBroken(article) {
+      console.log(article)
+      article.content = fixBrokenSentences(article.content)
+      updateArticle(article)
+      selectArticle(article)
     }
     async function updateArticle(article) {
       console.log(article)
@@ -576,7 +583,7 @@ const app = createApp({
     return {
       currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles, word_list,
       logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle,
-      jujigeba_html
+      jujigeba_html, fixBroken
     };
   }
 })

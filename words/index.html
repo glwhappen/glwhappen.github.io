@@ -117,6 +117,7 @@ h3, h4 {
           <button @click="fontSize -= 2">减小字体</button>
           <button class="danger" @click="deleteArticle">删除文章</button>
           <button @click="publicArticle(selectedArticle.id)"  v-if="selectedArticle">{{selectedArticle.public ? '不公开文章' : '公开文章'}}</button>
+          <button @click="fixBroken(selectedArticle)">格式化文本</button>
           <button @click="selectArticle(selectedArticle)">刷新颜色</button>
         </div>
       </div> 
