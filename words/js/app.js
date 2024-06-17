@@ -536,15 +536,24 @@ const app = createApp({
                           if (m.includes('*')) {
                               m = m.replace('*', '\n')
                           }
-                          let t = desc.t
+                          // {"d":"gd2","g":"不带 to 的不定式","x":"作宾语补足语(或称复合宾语)。","e":"clean up","y":"[kli:n ʌp]","c":"4","a":"clean up","t":"","m":"打扫干净, 清除干净","p":""}
+                          // {"d":"wd2","e":"quickly","y":"['kwikli]","c":"","a":"quickly","t":"ad.","m":"迅速地；很快地*不久；立即"}
+                          let t = desc.t // 词性
                           let g = desc.g
+                          element.title = '';
+                          if (desc.e) {
+                            element.title = `${desc.e} ${desc.y}\n`;
+                          }
                           if (!t) {
-                              element.title = `${desc.g}`;
+                              element.title += `${desc.g}`;
+                              if (desc.m) {
+                                  element.title += `\n${desc.m}`;
+                              }
                           } else {
                               if (g) {
-                                  element.title = `${desc.g}: \n${desc.t} ${m}`;
+                                  element.title += `${desc.g}: \n${desc.t} ${m}`;
                               } else {
-                                  element.title = `${desc.t} ${m}`;
+                                  element.title += `${desc.t} ${m}`;
                               }
                               
                           }
