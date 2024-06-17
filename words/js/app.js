@@ -416,6 +416,8 @@ const app = createApp({
     }
     let selectedTextTrans = ref('');
     let selectedText = ref('');
+    let split_word = ref([]);
+    
     let youdao = ref({})
     let jujigeba_html = ref('')
     function selectionchange() {
@@ -434,6 +436,7 @@ const app = createApp({
         // 检查是否是一个单词
         youdao.value = {}
         jujigeba_html.value = ''
+        split_word.value = ''
         // 小于3个单词，再调用有道翻译
         if (selectedText.value.trim().split(' ').length <= 7) {
           getYoudao(selectedText.value.trim()).then(res => {
@@ -442,7 +445,7 @@ const app = createApp({
           })
         }
 
-        
+        split_word.value = selectedText.value
         if (selectedText.value.trim().split(' ').length === 1) {
             // 是单词
             const word = selectedText.value.trim();
@@ -455,6 +458,10 @@ const app = createApp({
           }
             
             console.log('是单词', word)
+            getSyllableSplit(word).then(res => {
+                console.log('音节划分:', res);
+                split_word.value = res
+            })
 
             // parse 查询class 为 UserWords的用户单词信息，如果存在那么count + 1，否则创建新的单词信息
             const UserWords = Parse.Object.extend('UserWords');
@@ -583,7 +590,7 @@ const app = createApp({
     return {
       currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles, word_list,
       logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle,
-      jujigeba_html, fixBroken
+      jujigeba_html, fixBroken, split_word
     };
   }
 })

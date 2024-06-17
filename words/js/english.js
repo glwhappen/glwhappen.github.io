@@ -13,14 +13,16 @@ export async function getSyllableSplit(word) {
         const requestUrl = `${baseUrl}/syllable_split?word=${word}`;
 
         // 发起GET请求
-        const response = await axios.get(requestUrl);
+        const response = await fetch(requestUrl);
+        let data = await response.json();
 
         // 返回音节划分
-        return response.data.syllable_split;
+        return data.syllable_split;
     } catch (error) {
         // 处理错误
+        console.error(error)
         // throw new Error(`Error fetching syllable split: ${error.message}`);
-        return ''
+        return 'word'
     }
 }
 
