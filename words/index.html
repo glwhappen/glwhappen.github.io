@@ -129,6 +129,9 @@ h3, h4 {
         <h4>选中文本：</h4>
         <p class="selected-text" v-if="jujigeba_html" v-html="jujigeba_html"></p>
         <p class="selected-text" v-else>{{ split_word }}</p>
+        <div v-if="jieba_data">
+          <div v-html="jieba_data['grammar']"></div>
+        </div>
         <h4>选中文本翻译：</h4>
         <p class="selected-text-trans">{{ selectedTextTrans }}</p>
         
@@ -170,6 +173,7 @@ h3, h4 {
             </div>
           </div>
         </div>
+
         <div v-if="word_list">
           查询过的单词数量: {{ word_list.length }} <br>
           记住的单词数量: {{ word_list.filter(word => word.count === word.mastery).length }} <br>

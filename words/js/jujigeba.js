@@ -39,7 +39,7 @@ function deal_data(text) {
 
     if (match) {
         // console.log(match[1]);  // 输出：这里是要匹配的内容
-        res['html'] = match[1]
+        res['html'] = match[1].replace(/<font[^>]*>(.*)<\/font><br>/gs, '')
     } else {
         console.log("没有找到匹配");
     }
@@ -64,6 +64,9 @@ function deal_data(text) {
         res['analysis'] = match[1];
     } else {
         console.log("没有找到匹配");
+    }
+    if (text.split('***#***')[3] != '') {
+        res['grammar'] = text.split('***#***')[3].split('相关语法知识:')[0]
     }
 
     // console.log(res);

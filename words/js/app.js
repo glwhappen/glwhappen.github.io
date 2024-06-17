@@ -419,6 +419,7 @@ const app = createApp({
     let split_word = ref([]);
     
     let youdao = ref({})
+    let jieba_data = ref({})
     let jujigeba_html = ref('')
     function selectionchange() {
       const selection = window.getSelection();
@@ -436,6 +437,7 @@ const app = createApp({
         // 检查是否是一个单词
         youdao.value = {}
         jujigeba_html.value = ''
+        jieba_data.value = {}
         split_word.value = ''
         // 小于3个单词，再调用有道翻译
         if (selectedText.value.trim().split(' ').length <= 7) {
@@ -506,6 +508,7 @@ const app = createApp({
             console.log('jieba', res)
             if (res == {}) return
             jujigeba_html.value = res.html
+            jieba_data.value = res
             nextTick(() => {
               let pos = 0
               let descriptions = JSON.parse(res.descriptions)
@@ -590,7 +593,7 @@ const app = createApp({
     return {
       currentUser, articles, selectedArticle,fontSize, selectedTextTrans, selectedText, selectedUserWord, toMastery, youdao, publicArticles, word_list,
       logout, addArticle, selectArticle, updateArticle, editableRef, updateContent, selectionchange, deleteArticle, handleBlur, publicArticle,
-      jujigeba_html, fixBroken, split_word
+      jujigeba_html, jieba_data, fixBroken, split_word
     };
   }
 })
