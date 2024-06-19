@@ -17,7 +17,7 @@
       <button @click="isLoginForm = true">登录</button>
       <button @click="isLoginForm = false">注册</button>
       <form v-if="isLoginForm" @submit.prevent="login">
-        <input type="text" v-model="username" placeholder="用户名">
+        <input type="text" v-model="username" placeholder="用户名或邮箱">
         <input type="password" v-model="password" placeholder="密码">
         <button type="submit">登录</button>
         <p v-if="error">{{ error }}</p>
