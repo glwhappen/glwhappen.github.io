@@ -1,0 +1,2457 @@
+{
+    "web_trans": {
+        "web-translation": [
+            {
+                "@same": "true",
+                "key": "varying",
+                "key-speech": "varying",
+                "trans": [
+                    {
+                        "summary": {
+                            "line": [
+                                "<b>varying</b> <b>不同的</b>；变化的 <b>varying</b>在某些情况下可以替换different，表示“<b>不同的</b>”，但是它还有另一个意思是“变化的”。"
+                            ]
+                        },
+                        "value": "不同的",
+                        "support": 385,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "...enonphenomena⑵用词正确Effect(实现)affect(影响)Infer(推论)imply(暗示隐含)Theory(理论学说)hypothesis(假设)Varying(<b>变化的</b>)various(各种各样不同) 问题question疑问Problem难题毛病Issue课题⑶语法正确Ⅰ英文摘要的时态：一般现在时，一般过去时一般现在..."
+                            ]
+                        },
+                        "value": "变化的",
+                        "support": 164,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "... <b>varying</b>变动修改改变偏离 <b>varying</b><b>改变的</b> vaseline凡士林 ..."
+                            ]
+                        },
+                        "value": "改变的",
+                        "support": 48,
+                        "url": ""
+                    },
+                    {
+                        "summary": {
+                            "line": [
+                                "图2 <b>可变</b> ( Varying )：阵列生成的特征位置不同，尺寸也不同但不干涉，阵列效果如图3。"
+                            ]
+                        },
+                        "value": "可变",
+                        "support": 44,
+                        "url": ""
+                    }
+                ]
+            },
+            {
+                "key": "Time-varying",
+                "key-speech": "Time-varying",
+                "trans": [
+                    {
+                        "value": "时变"
+                    },
+                    {
+                        "value": "时变性"
+                    },
+                    {
+                        "value": "随时间变动"
+                    }
+                ]
+            },
+            {
+                "key": "varying load",
+                "key-speech": "varying+load",
+                "trans": [
+                    {
+                        "value": "变负载"
+                    },
+                    {
+                        "cls": {
+                            "cl": [
+                                "力"
+                            ]
+                        },
+                        "value": "变负荷"
+                    },
+                    {
+                        "value": "变动载重"
+                    }
+                ]
+            },
+            {
+                "key": "varying speed motor",
+                "key-speech": "varying+speed+motor",
+                "trans": [
+                    {
+                        "cls": {
+                            "cl": [
+                                "电"
+                            ]
+                        },
+                        "value": "变速电动机"
+                    }
+                ]
+            },
+            {
+                "key": "varying stress",
+                "key-speech": "varying+stress",
+                "trans": [
+                    {
+                        "value": "变动应力"
+                    }
+                ]
+            },
+            {
+                "key": "varying measures",
+                "key-speech": "varying+measures",
+                "trans": [
+                    {
+                        "value": "不同的措施"
+                    }
+                ]
+            },
+            {
+                "key": "varying parameter",
+                "key-speech": "varying+parameter",
+                "trans": [
+                    {
+                        "value": "可变参数"
+                    },
+                    {
+                        "value": "时变参数"
+                    }
+                ]
+            },
+            {
+                "key": "varying duty",
+                "key-speech": "varying+duty",
+                "trans": [
+                    {
+                        "value": "变负载"
+                    },
+                    {
+                        "value": "变工况"
+                    },
+                    {
+                        "value": "变动工况"
+                    },
+                    {
+                        "value": "不定期运行"
+                    }
+                ]
+            },
+            {
+                "key": "uniformly varying load",
+                "key-speech": "uniformly+varying+load",
+                "trans": [
+                    {
+                        "value": "均匀变负载"
+                    },
+                    {
+                        "value": "均匀为负载"
+                    },
+                    {
+                        "value": "均变载重"
+                    },
+                    {
+                        "value": "等变负载"
+                    }
+                ]
+            },
+            {
+                "key": "slowly varying component",
+                "key-speech": "slowly+varying+component",
+                "trans": [
+                    {
+                        "value": "慢变分量"
+                    },
+                    {
+                        "cls": {
+                            "cl": [
+                                "数"
+                            ]
+                        },
+                        "value": "缓变分量"
+                    }
+                ]
+            }
+        ]
+    },
+    "ee": {
+        "source": {
+            "name": "WordNet",
+            "url": "https://wordnet.princeton.edu"
+        },
+        "word": {
+            "trs": [
+                {
+                    "pos": "adj.",
+                    "tr": [
+                        {
+                            "examples": [
+                                "the varying angles of roof slope"
+                            ],
+                            "tran": "marked by diversity or difference",
+                            "similar-words": [
+                                "variable"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "phone": "'vɛəriŋ",
+            "speech": "varying",
+            "return-phrase": "varying"
+        }
+    },
+    "blng_sents_part": {
+        "sentence-count": 6,
+        "sentence-pair": [
+            {
+                "sentence": "Recent presidents have used television, as well as radio, with varying degrees of success.",
+                "sentence-eng": "Recent presidents have used television, as well as radio, with <b>varying</b> degrees of success.",
+                "sentence-translation": "新近的总统们已经利用了电视和收音机，取得了不同程度的成功。",
+                "speech-size": "26kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "18",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "19",
+                                "@e": "23",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "24",
+                                "@e": "28",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "29",
+                                "@e": "39",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "41",
+                                "@e": "43",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "44",
+                                "@e": "57",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "59",
+                                "@e": "63",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "64",
+                                "@e": "71",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "72",
+                                "@e": "79",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "80",
+                                "@e": "82",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "83",
+                                "@e": "90",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "7",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "9",
+                                "@e": "11",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "12",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "14",
+                                "@e": "15",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "18",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "21",
+                                "@e": "22",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "22",
+                                "@e": "24",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "24",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "27",
+                                "@e": "29",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            }
+                        ]
+                    }
+                },
+                "source": "《柯林斯英汉双解大词典》",
+                "url": "https://《柯林斯英汉双解大词典》/",
+                "sentence-speech": "Recent+presidents+have+used+television%2C+as+well+as+radio%2C+with+varying+degrees+of+success.&le=eng"
+            },
+            {
+                "sentence": "If you put an infant on Mars, they would adapt to varying degrees of the new environment.",
+                "sentence-eng": "If you put an infant on Mars, they would adapt to <b>varying</b> degrees of the new environment.",
+                "sentence-translation": "如果你把一个婴儿放在火星上，他们就会适应不同程度的新环境。",
+                "speech-size": "26kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "11",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "12",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "21",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "22",
+                                "@e": "24",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "25",
+                                "@e": "29",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "31",
+                                "@e": "35",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "36",
+                                "@e": "41",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "42",
+                                "@e": "50",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "51",
+                                "@e": "58",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "59",
+                                "@e": "66",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            },
+                            {
+                                "@s": "67",
+                                "@e": "73",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ]
+                                },
+                                "@id": "12"
+                            },
+                            {
+                                "@s": "74",
+                                "@e": "77",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ]
+                                },
+                                "@id": "13"
+                            },
+                            {
+                                "@s": "78",
+                                "@e": "89",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ]
+                                },
+                                "@id": "14"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "3",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "7",
+                                "@e": "9",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "9",
+                                "@e": "11",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "11",
+                                "@e": "14",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "15",
+                                "@e": "17",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "17",
+                                "@e": "19",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "19",
+                                "@e": "21",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "21",
+                                "@e": "23",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "23",
+                                "@e": "25",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            },
+                            {
+                                "@s": "25",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ]
+                                },
+                                "@id": "12"
+                            },
+                            {
+                                "@s": "26",
+                                "@e": "27",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "13"
+                                        }
+                                    ]
+                                },
+                                "@id": "13"
+                            },
+                            {
+                                "@s": "27",
+                                "@e": "29",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "14"
+                                        }
+                                    ]
+                                },
+                                "@id": "14"
+                            }
+                        ]
+                    }
+                },
+                "url": "youdao",
+                "sentence-speech": "If+you+put+an+infant+on+Mars%2C+they+would+adapt+to+varying+degrees+of+the+new+environment.&le=eng"
+            },
+            {
+                "sentence": "I have achieved varying degrees of fluency in 12 languages, and look forward to learning more.",
+                "sentence-eng": "I have achieved <b>varying</b> degrees of fluency in 12 languages, and look forward to learning more.",
+                "sentence-translation": "我已经在12门语言上达到了不同程度的流利，还期待学更多种语言。",
+                "speech-size": "27kb",
+                "aligned-words": {
+                    "src": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "2",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "3",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "17",
+                                "@e": "24",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "25",
+                                "@e": "32",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "33",
+                                "@e": "35",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "36",
+                                "@e": "43",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "44",
+                                "@e": "46",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "47",
+                                "@e": "49",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "50",
+                                "@e": "59",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "61",
+                                "@e": "69",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "81",
+                                "@e": "89",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            },
+                            {
+                                "@s": "90",
+                                "@e": "94",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "12"
+                            }
+                        ]
+                    },
+                    "tran": {
+                        "chars": [
+                            {
+                                "@s": "1",
+                                "@e": "2",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "0"
+                                        }
+                                    ]
+                                },
+                                "@id": "0"
+                            },
+                            {
+                                "@s": "2",
+                                "@e": "4",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "1"
+                                        }
+                                    ]
+                                },
+                                "@id": "1"
+                            },
+                            {
+                                "@s": "4",
+                                "@e": "5",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ]
+                                },
+                                "@id": "2"
+                            },
+                            {
+                                "@s": "5",
+                                "@e": "7",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ]
+                                },
+                                "@id": "3"
+                            },
+                            {
+                                "@s": "8",
+                                "@e": "10",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ]
+                                },
+                                "@id": "4"
+                            },
+                            {
+                                "@s": "14",
+                                "@e": "16",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "2"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ]
+                                },
+                                "@id": "5"
+                            },
+                            {
+                                "@s": "16",
+                                "@e": "18",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "3"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "6"
+                                        }
+                                    ]
+                                },
+                                "@id": "6"
+                            },
+                            {
+                                "@s": "18",
+                                "@e": "19",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "4"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "7"
+                                        }
+                                    ]
+                                },
+                                "@id": "7"
+                            },
+                            {
+                                "@s": "19",
+                                "@e": "21",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "5"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "8"
+                                        }
+                                    ]
+                                },
+                                "@id": "8"
+                            },
+                            {
+                                "@s": "22",
+                                "@e": "23",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "9"
+                                        }
+                                    ]
+                                },
+                                "@id": "9"
+                            },
+                            {
+                                "@s": "25",
+                                "@e": "26",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "10"
+                                        }
+                                    ]
+                                },
+                                "@id": "10"
+                            },
+                            {
+                                "@s": "26",
+                                "@e": "27",
+                                "aligns": {
+                                    "sc": [
+                                        {
+                                            "@id": "12"
+                                        }
+                                    ],
+                                    "tc": [
+                                        {
+                                            "@id": "11"
+                                        }
+                                    ]
+                                },
+                                "@id": "11"
+                            }
+                        ]
+                    }
+                },
+                "url": "youdao",
+                "sentence-speech": "I+have+achieved+varying+degrees+of+fluency+in+12+languages%2C+and+look+forward+to+learning+more.&le=eng"
+            }
+        ],
+        "more": "blng_sents",
+        "trs-classify": [
+            {
+                "proportion": "100%",
+                "tr": "全部"
+            },
+            {
+                "proportion": "95.5%",
+                "tr": "变化"
+            },
+            {
+                "proportion": "3.6%",
+                "tr": "多样化"
+            },
+            {
+                "proportion": "0.9%",
+                "tr": "变异"
+            }
+        ]
+    },
+    "individual": {
+        "synonym": [
+            {
+                "pos": "v.",
+                "trans": [
+                    {
+                        "word": "differ",
+                        "tran": "相异"
+                    },
+                    {
+                        "word": "change",
+                        "tran": "变换"
+                    },
+                    {
+                        "word": "diversify",
+                        "tran": "变化"
+                    }
+                ]
+            }
+        ],
+        "antonym": [
+            {
+                "pos": "v.",
+                "trans": [
+                    {
+                        "word": "remain",
+                        "tran": "保持不变"
+                    }
+                ]
+            }
+        ],
+        "anagram": {
+            "wfs": [
+                {
+                    "name": "第三人称单数",
+                    "value": "varies"
+                },
+                {
+                    "name": "现在分词",
+                    "value": "varying"
+                },
+                {
+                    "name": "过去式",
+                    "value": "varied"
+                },
+                {
+                    "name": "过去分词",
+                    "value": "varied"
+                }
+            ],
+            "word": "vary"
+        },
+        "idiomatic": [
+            {
+                "colloc": {
+                    "en": "vary in size",
+                    "zh": "大小不同"
+                }
+            },
+            {
+                "colloc": {
+                    "en": "vary from … to ...",
+                    "zh": "从……到……各不相同"
+                },
+                "sents": [
+                    {
+                        "en": "Cultures vary from region to region.",
+                        "zh": "不同地区的文化各不相同。"
+                    }
+                ]
+            }
+        ],
+        "trs": [
+            {
+                "pos": "vi.",
+                "tran": "各不相同"
+            },
+            {
+                "pos": "vi.",
+                "tran": "多变；变化无常"
+            },
+            {
+                "pos": "vt.",
+                "tran": "改变，使多样化"
+            }
+        ],
+        "level": "高考",
+        "examInfo": {
+            "year": 5,
+            "questionTypeInfo": [
+                {
+                    "time": 0,
+                    "type": "翻译"
+                },
+                {
+                    "time": 0,
+                    "type": "知识运用"
+                },
+                {
+                    "time": 0,
+                    "type": "写作"
+                },
+                {
+                    "time": 0,
+                    "type": "听力理解"
+                },
+                {
+                    "time": 7,
+                    "type": "阅读理解"
+                }
+            ],
+            "recommendationRate": 3,
+            "frequency": 7
+        },
+        "return-phrase": "vary",
+        "pastExamSents": [
+            {
+                "en": "Galileo was not merely ambitious when he dropped objects of varying weights from the Leaning Tower at Pisa and timed their fall to the ground.",
+                "source": "2020·天津卷·阅读理解",
+                "zh": "伽利略从比萨斜塔上扔下不同重量的物体，并计算它们的下落时间。他要实现的不仅是他的勃勃雄心。"
+            },
+            {
+                "en": "The effects of gossip vary depending on the situation.",
+                "source": "2016·浙江卷",
+                "zh": "流言的影响因情况而异。"
+            },
+            {
+                "en": "His mood seems to vary according to the weather.",
+                "source": "·",
+                "zh": "它的情绪似乎随天气而变化。"
+            },
+            {
+                "en": "My doctor said I should vary my diet more.",
+                "source": "·",
+                "zh": "医生说我应该使日常饮食更加多样化。"
+            }
+        ],
+        "derivative": [
+            {
+                "pos": "n.",
+                "trans": [
+                    {
+                        "word": "variable",
+                        "tran": "变量"
+                    },
+                    {
+                        "word": "variability",
+                        "tran": "可变性"
+                    },
+                    {
+                        "word": "variedness",
+                        "tran": "变化"
+                    }
+                ]
+            },
+            {
+                "pos": "adv.",
+                "trans": [
+                    {
+                        "word": "variably",
+                        "tran": "易变地"
+                    }
+                ]
+            },
+            {
+                "pos": "adj.",
+                "trans": [
+                    {
+                        "word": "variable",
+                        "tran": "变量的"
+                    },
+                    {
+                        "word": "varied",
+                        "tran": "多变的"
+                    },
+                    {
+                        "word": "varying",
+                        "tran": "不同的"
+                    }
+                ]
+            }
+        ],
+        "discriminate": {
+            "word": "vary",
+            "content": "differ和vary都有“不同，相异”的意思，differ指两者之间有不同点，或与某人意见不统一，如\nChinese differs from English in this respect.\n在这方面汉语不同于英语。\nvary指一组类似的事物在大小、形状等方面有别，如\nAverage test scores vary from class to class.\n各班的平均测验成绩不同。",
+            "mixWords": "differ, vary"
+        },
+        "highExpression": [
+            {
+                "expression": {
+                    "en": "vary in sth. ",
+                    "zh": "（大小、形状等）相异，不同，有别"
+                },
+                "sents": [
+                    {
+                        "en": "These suggestions which were put forward in the environmental conference vary in influence and importance.",
+                        "category": "议论文",
+                        "zh": "在环保会议上提出的这些建议在影响力和重要性上都存在着差异。"
+                    }
+                ]
+            },
+            {
+                "expression": {
+                    "en": "vary from sth. to sth.",
+                    "zh": "（根据情况）变化，变更，改变"
+                },
+                "sents": [
+                    {
+                        "en": "These opinions will change with time, and vary from place to place.",
+                        "category": "议论文",
+                        "zh": "这些观点会根据时间和地点的不同而改变。"
+                    }
+                ]
+            },
+            {
+                "expression": {
+                    "en": "opinions vary ...",
+                    "zh": "众说纷纭……"
+                },
+                "sents": [
+                    {
+                        "en": "As opinions vary on that point, no decision can be reached.",
+                        "category": "议论文",
+                        "zh": "在那一点上，大家意见纷纷，莫衷一是。"
+                    }
+                ]
+            }
+        ]
+    },
+    "collins_primary": {
+        "words": {
+            "indexforms": [
+                "vary",
+                "varies",
+                "varying",
+                "varied"
+            ],
+            "word": "vary"
+        },
+        "gramcat": [
+            {
+                "audiourl": "https://ydlunacommon-cdn.nosdn.127.net/25743e2f9c44c23bddea235c72e47d5e.mp3",
+                "pronunciation": "ˈvɛəri",
+                "senses": [
+                    {
+                        "sensenumber": "1",
+                        "examples": [
+                            {
+                                "sense": {
+                                    "lang": "ZH-CN",
+                                    "word": "这些碗是手工制作的，所以它们略有不同。"
+                                },
+                                "example": "The bowls are handmade, so they vary slightly."
+                            }
+                        ],
+                        "definition": "to be different from each other",
+                        "lang": "ZH-CN",
+                        "word": "有差别"
+                    },
+                    {
+                        "sensenumber": "2",
+                        "examples": [
+                            {
+                                "sense": {
+                                    "lang": "ZH-CN",
+                                    "word": "一定要改变你写作的主题。"
+                                },
+                                "example": "Be sure to vary the topics you write about."
+                            }
+                        ],
+                        "definition": "to change something or make it different",
+                        "lang": "ZH-CN",
+                        "word": "变更；改变"
+                    },
+                    {
+                        "sensenumber": "3",
+                        "examples": [
+                            {
+                                "sense": {
+                                    "lang": "ZH-CN",
+                                    "word": "在这个村子里，气温一直变化不大。"
+                                },
+                                "example": "Here in the village, the temperature never varied a great deal."
+                            }
+                        ],
+                        "definition": "to become different or changed",
+                        "lang": "ZH-CN",
+                        "word": "变化"
+                    }
+                ],
+                "partofspeech": "verb",
+                "audio": "60125",
+                "forms": [
+                    {
+                        "form": "varies"
+                    },
+                    {
+                        "form": "varying"
+                    },
+                    {
+                        "form": "varied"
+                    }
+                ]
+            }
+        ]
+    },
+    "rel_word": {
+        "word": "varying",
+        "stem": "vary",
+        "rels": [
+            {
+                "rel": {
+                    "pos": "adj.",
+                    "words": [
+                        {
+                            "word": "variable",
+                            "tran": "变量的；可变的；易变的，多变的；变异的，[生物] 畸变的"
+                        },
+                        {
+                            "word": "varied",
+                            "tran": "多变的；各式各样的；杂色的"
+                        },
+                        {
+                            "word": "variorum",
+                            "tran": "有诸家注解的；集注的；集不同版本而成之版本的"
+                        }
+                    ]
+                }
+            },
+            {
+                "rel": {
+                    "pos": "adv.",
+                    "words": [
+                        {
+                            "word": "variously",
+                            "tran": "不同地；多方面地；个别地；多彩地"
+                        },
+                        {
+                            "word": "variably",
+                            "tran": "易变地；不定地"
+                        }
+                    ]
+                }
+            },
+            {
+                "rel": {
+                    "pos": "n.",
+                    "words": [
+                        {
+                            "word": "variable",
+                            "tran": "[数] 变量；可变物，可变因素"
+                        },
+                        {
+                            "word": "variability",
+                            "tran": "可变性，变化性；[生物][数] 变异性"
+                        },
+                        {
+                            "word": "variedness",
+                            "tran": "变化；杂色"
+                        },
+                        {
+                            "word": "variorum",
+                            "tran": "集注本"
+                        }
+                    ]
+                }
+            },
+            {
+                "rel": {
+                    "pos": "v.",
+                    "words": [
+                        {
+                            "word": "varied",
+                            "tran": "改变；使多样化（vary的过去式和过去分词形式）"
+                        }
+                    ]
+                }
+            },
+            {
+                "rel": {
+                    "pos": "vi.",
+                    "words": [
+                        {
+                            "word": "vary",
+                            "tran": "变化；变异；违反"
+                        }
+                    ]
+                }
+            },
+            {
+                "rel": {
+                    "pos": "vt.",
+                    "words": [
+                        {
+                            "word": "vary",
+                            "tran": "改变；使多样化；变奏"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "auth_sents_part": {
+        "sentence-count": 6,
+        "more": "auth_sents",
+        "sent": [
+            {
+                "score": 0.9756432771682739,
+                "speech": "Perhaps+more+than+anything%2C+it+reminds+us+that+different+ethnic+groups+take+varying+paths+to+successful+integration.+",
+                "speech-size": "33kb",
+                "source": "FORBES: <i>California And The Jews</i>",
+                "url": "youdao",
+                "foreign": "Perhaps more than anything, it reminds us that different ethnic groups take <b>varying</b> paths to successful integration. "
+            },
+            {
+                "score": 0.963807225227356,
+                "speech": "Indeed%2C+CAHI+published+a+paper+in+2009+comparing+premium+spikes+under+varying+reform+scenarios.+",
+                "speech-size": "27kb",
+                "source": "FORBES: <i>The Constitutional Issue in ObamaCare Isn't Cost, but Control</i>",
+                "url": "youdao",
+                "foreign": "Indeed, CAHI published a paper in 2009 comparing premium spikes under <b>varying</b> reform scenarios. "
+            },
+            {
+                "score": 0.9637763500213623,
+                "speech": "All+major+news+agencies+supported+the+right-wing+and+demonstrated+varying+degrees+of+anti-reformist+bias.+",
+                "speech-size": "30kb",
+                "source": "BBC: <i>NEWS | Middle East | Iran media lean to the right</i>",
+                "url": "youdao",
+                "foreign": "All major news agencies supported the right-wing and demonstrated <b>varying</b> degrees of anti-reformist bias. "
+            }
+        ]
+    },
+    "simple": {
+        "query": "varying",
+        "word": [
+            {
+                "usphone": "ˈveriɪŋ; ˈværiɪŋ",
+                "ukphone": "ˈveəriɪŋ",
+                "ukspeech": "varying&type=1",
+                "return-phrase": "varying",
+                "multiPhone": {
+                    "us": [
+                        {
+                            "phone": "ˈveriɪŋ",
+                            "pos": [
+                                "v"
+                            ],
+                            "speech": "varying&phonetic=ˈveriɪŋ&type=2"
+                        },
+                        {
+                            "phone": "ˈværiɪŋ",
+                            "pos": [
+                                "v"
+                            ],
+                            "speech": "varying&phonetic=ˈværiɪŋ&type=2"
+                        }
+                    ]
+                },
+                "usspeech": "varying&type=2"
+            }
+        ]
+    },
+    "media_sents_part": {
+        "sentence-count": 6,
+        "more": "media_sents",
+        "query": "varying",
+        "sent": [
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=-5924146158244817279",
+                            "duration": "9500",
+                            "swf": "",
+                            "name": "standard.2010.06.22",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=-5924146158244817279&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "45kb",
+                "eng": "Price says the incident with General McChrystal and the departure of Cowper-Coles reflect <b>varying</b> attitudes about the best approach in Afghanistan."
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=7643185210565923787&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=7643185210565923787",
+                            "name": "麻省理工公开课",
+                            "source": "固态化学导论课程节选"
+                        }
+                    ]
+                },
+                "chn": "我们有一个元素表，其中的元素的特性,随着原子质量的改变而引起周期性的变化，所以我们将所有的信息精简,将它变成一个周期表。<br>",
+                "eng": "We have a table of the elements with properties <b>varying</b> periodically with atomic mass, so we compress all of that information and refer to it as the Periodic Table.<br>"
+            },
+            {
+                "@mediatype": "video",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "sourceUrl": "youdao",
+                            "streamUrl": "movie=http://dict.youdao.com/purevideo?docid=1121196197688621233&auto=true",
+                            "swf": "http://shared.ydstatic.com/dict/4.0/simplayer.swf",
+                            "imageUrl": "http://dict.youdao.com/pureimage?docid=1121196197688621233",
+                            "name": "耶鲁公开课",
+                            "source": "关于食物的心理学、生物学和政治学课程节选"
+                        }
+                    ]
+                },
+                "chn": "根据刚才的测试可以发现,对于营养学,你们的知识量各有不同<br>",
+                "eng": "Now so-- just in that little quiz you can see that you guys have <b>varying</b> levels of knowledge about nutrition.<br>"
+            },
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=3826547658764460632",
+                            "duration": "9200",
+                            "swf": "",
+                            "name": "standard.2010.08.09",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=3826547658764460632&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "41kb",
+                "eng": "Although the three witnesses have <b>varying</b> accounts of the events police in South Africa say the stones given to Campbell are diamonds."
+            },
+            {
+                "@mediatype": "audio",
+                "snippets": {
+                    "snippet": [
+                        {
+                            "streamUrl": "https://dict.youdao.com/pureaudio?docid=-9203926394896983660",
+                            "duration": "19100",
+                            "swf": "",
+                            "name": "standard.2010.02.27",
+                            "source": "VOA",
+                            "win8": "https://dict.youdao.com/pureaudio?docid=-9203926394896983660&dist=win8"
+                        }
+                    ]
+                },
+                "speech-size": "57kb",
+                "eng": "\"Even though,as Leo pointed out, it looks like a thriller, the glue that holds it together is <b>varying</b> levels of tenderness: for your wife,for your child, for your patient,for your friend.\""
+            }
+        ]
+    },
+    "phrs": {
+        "word": "varying",
+        "phrs": [
+            {
+                "headword": "time varying",
+                "translation": "adj. 随时间变化的"
+            },
+            {
+                "headword": "varying load",
+                "translation": "变动负荷；不定负荷"
+            },
+            {
+                "headword": "varying measures",
+                "translation": "不同的方法；多种手段"
+            }
+        ]
+    },
+    "special": {
+        "summary": {
+            "sources": {
+                "source": {
+                    "site": "NoteExpress",
+                    "url": "https://dict.youdao.com"
+                }
+            },
+            "text": "以上统计来源于2,447,534篇论文数据，部分数据来源于"
+        },
+        "co-add": "https://dict.youdao.com",
+        "total": "2,447,543",
+        "entries": [
+            {
+                "entry": {
+                    "major": "计算机科学技术",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "变化的",
+                                "chnSent": "针对难以分解的多目标优化问题,提出了一种子群体个数动态<b>变化的</b>合作型多目标优化协同进化算法。",
+                                "cite": "88",
+                                "docTitle": "基于进化算法的多目标优化方法研究 ",
+                                "engSent": "For the undecomposable problem, a multi-objective optimization co-evolutionary algorithm with dynamically <b>varying</b> number of subpopulations is proposed.",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            },
+            {
+                "entry": {
+                    "major": "艺术学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "变奏",
+                                "cite": "0"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            },
+            {
+                "entry": {
+                    "major": "生物学",
+                    "trs": [
+                        {
+                            "tr": {
+                                "nat": "变异",
+                                "cite": "4",
+                                "docTitle": "利用SSR标记和表型性状聚类分析食味优良粳稻多样性 ",
+                                "url": "youdao"
+                            }
+                        }
+                    ],
+                    "num": 1
+                }
+            }
+        ]
+    },
+    "wordElaboration": {
+        "encryptedData": "beGALoEcIOl0nd25FWxKlHQbQKVQ_lUHVVVSyuZ9tztjof3k_o07WaHTvT7AQG9Sv5AY652C8asapPh5xeT_Eq89_2PzUcMlR_nY3Va4AWe4sdMYb-YlaGKPymb55iavE7QT0eVQyRlZ2DHMiSU3U-zgPPaF-blj_W90q09cSXpQrsTyDe1WMZpm6ObgEbaFxtDxfWXhjlYd7mdl2FYzZyJwEiPWxlMbop7UsoCHLUCNmbo_C4cgm_PVlaCg-x4X_WvqSDb7AapJ9eHwKKWeQLAQgqSCr9xUDgiBWNNbFPlbySAZrOn-00VdQzdC-h3NiWMsQ5Wk719V5_ik3q9IuTVrAKNnRiBjCy-hpDxKg98SU9BDiYcmAqz-JxILzUMSUmImjcCh68KHjFT9qAlGiQUz0clHidOYosLQVenlc1UiyonuCjZPTV34PccvHhPbmGr8SLAipP-us64VG9ww0oFeY9_fmtRO1J9_9dPWMaMwr0gOQ6rqetD5I2z7iCP5-laB4ML_xISWAp8LDO3PiUPU774h226V8YBcm-62Ijc27p_Q4--LNDNcLR_-obghHTT4IEfd6jC-pmrV54iXxjjkThBR43rbH6g2QgGoz15De_Gm6LgP7OcyHkhMEXUDauaJVbskPuCx5Xhbylw2rY85nI74Cj8Lcvlr_yv0x9DifqOwChqRvLxeKOmvmPc4EAt09IJ-8L0UPOPJEEssYkq0p6w0zBrX4H1Di_50Azclqt2RLZc5K18tLXDkRDVQEsUQ_8ljccMzw0w3KYdNnAiwr1I7hfkf_O5kaeWxyOGQf7xe78DZyl6PeDtTHfAIqJxUF4s7aM4oobv_SkVeehcMEOHZtUWahcBDLaVEWYfJyLloj6SuSsPtCJcf2THSrbZGglvE079XeSQJ5OFrXD8gQw-fxqklAQNlHKKKGNrjxpMIpMqChjVnQ_oP57JKlHGD6A8nlpXfSEqFsKMC0EHIPEWZBgvsBxEv__IfdiC453rjvjTvCNxBdyW-7vnHLbveo7dqqv6cIOMVfts4avAoohRbDrtAoXBE-iHcdj7DHPp8Ti205YCmf7q-YwY3EfmSwyHT1YeU8stTYNjUi8whManmkJePnZ8BEA7FqPP18Lb5wUogIgMAXExt0jOAJOepeL8h0QpG9RC1NgHpmFzj8Bj5bXW-cTZ4F77QZNyUOKZitr2hyR5FO_R1e80m"
+    },
+    "syno": {
+        "synos": [
+            {
+                "pos": "adj.",
+                "ws": [
+                    "different",
+                    "diverse",
+                    "unlike",
+                    "changed",
+                    "another"
+                ],
+                "tran": "不同的；变化的"
+            },
+            {
+                "pos": "v.",
+                "ws": [
+                    "changing",
+                    "shifting"
+                ],
+                "tran": "变化，改变（vary的现在分词）"
+            }
+        ],
+        "word": "varying"
+    },
+    "input": "varying",
+    "collins": {
+        "collins_entries": [
+            {
+                "entries": {
+                    "entry": [
+                        {
+                            "tran_entry": [
+                                {
+                                    "pos_entry": {
+                                        "pos": "V-I",
+                                        "pos_tips": "不及物动词"
+                                    },
+                                    "exam_sents": {
+                                        "sent": [
+                                            {
+                                                "chn_sent": "由于它们是手工制作的，每一件都会略有不同。",
+                                                "eng_sent": "As they're handmade, each one varies slightly."
+                                            },
+                                            {
+                                                "chn_sent": "这一文本有别于那些早期的版本。",
+                                                "eng_sent": "The text varies from the earlier versions."
+                                            }
+                                        ]
+                                    },
+                                    "tran": "If things <b>vary</b>, they are different from each other in size, amount, or degree. 各不相同"
+                                }
+                            ]
+                        },
+                        {
+                            "tran_entry": [
+                                {
+                                    "pos_entry": {
+                                        "pos": "V-T/V-I",
+                                        "pos_tips": "及物动词/不及物动词"
+                                    },
+                                    "exam_sents": {
+                                        "sent": [
+                                            {
+                                                "chn_sent": "这项酒税的额度根据瓶中酒量的不同而变化。",
+                                                "eng_sent": "The cost of the alcohol duty varies according to the amount of wine in the bottle."
+                                            }
+                                        ]
+                                    },
+                                    "tran": "If something <b>varies</b> or if you <b>vary</b> it, it becomes different or changed. 变化; 使变化"
+                                }
+                            ]
+                        },
+                        {
+                            "tran_entry": [
+                                {
+                                    "seeAlsos": {
+                                        "seealso": "see also",
+                                        "seeAlso": [
+                                            {
+                                                "seeword": "varied"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "phonetic": "ˈvɛərɪ",
+                "basic_entries": {
+                    "basic_entry": [
+                        {
+                            "cet": "CET4 TEM4",
+                            "headword": "vary",
+                            "wordforms": {
+                                "wordform": [
+                                    {
+                                        "word": "varying"
+                                    },
+                                    {
+                                        "word": "varied"
+                                    },
+                                    {
+                                        "word": "varies"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "headword": "vary",
+                "star": "3"
+            }
+        ]
+    },
+    "meta": {
+        "input": "varying",
+        "guessLanguage": "eng",
+        "isHasSimpleDict": "1",
+        "le": "en",
+        "lang": "eng",
+        "dicts": [
+            "web_trans",
+            "ee",
+            "blng_sents_part",
+            "individual",
+            "collins_primary",
+            "rel_word",
+            "auth_sents_part",
+            "simple",
+            "media_sents_part",
+            "phrs",
+            "special",
+            "wordElaboration",
+            "syno",
+            "collins",
+            "meta",
+            "wikipedia_digest",
+            "ec"
+        ]
+    },
+    "le": "en",
+    "wikipedia_digest": {
+        "summarys": [
+            {
+                "summary": "Variation may refer to:",
+                "key": "Varying"
+            }
+        ],
+        "source": {
+            "name": "维基百科",
+            "url": "http://en.wikipedia.org/wiki/Varying"
+        }
+    },
+    "lang": "eng",
+    "ec": {
+        "web_trans": [
+            "变化的",
+            "改变的"
+        ],
+        "special": [
+            {
+                "nat": "变化的",
+                "major": "计算机科学技术"
+            },
+            {
+                "nat": "变异",
+                "major": "生物学"
+            }
+        ],
+        "exam_type": [
+            "高中",
+            "CET4",
+            "CET6",
+            "考研",
+            "IELTS",
+            "TOEFL",
+            "GRE",
+            "商务英语"
+        ],
+        "source": {
+            "name": "有道词典",
+            "url": "https://dict.youdao.com"
+        },
+        "word": {
+            "usphone": "ˈveriɪŋ; ˈværiɪŋ",
+            "ukphone": "ˈveəriɪŋ",
+            "ukspeech": "varying&type=1",
+            "trs": [
+                {
+                    "pos": "v.",
+                    "tran": "（大小、形状等）相异；（根据情况）变化；（使）多样化；偏离；（成比例）变化；变异（vary 的现在分词）"
+                },
+                {
+                    "pos": "adj.",
+                    "tran": "不同的；易变的"
+                }
+            ],
+            "return-phrase": "varying",
+            "usspeech": "varying&type=2",
+            "prototype": "vary"
+        }
+    }
+}
