@@ -401,7 +401,7 @@ const app = createApp({
       
         // 规范化空白字符（保留换行）
         cleanedText = cleanedText
-        //   .replace(/&nbsp;/g, ' ') // 将 &nbsp; 替换为空格
+          .replace(/&nbsp;/g, ' ') // 将 &nbsp; 替换为空格
         //   .replace(/\t/g, ' ')    // 将制表符替换为空格
         //   .replace(/ +/g, ' ');  // 将多个连续的空格合并为一个
       
@@ -449,6 +449,7 @@ const app = createApp({
 
         split_word.value = selectedText.value
         if (selectedText.value.trim().split(' ').length === 1) {
+          console.log("是单词", selectedText.value)
             // 是单词
             const word = selectedText.value.trim();
             if (word == 'span' || word == '' || word == ' ' || word == '-') {
@@ -563,6 +564,8 @@ const app = createApp({
           
 
             })
+          }).catch(e => {
+            console.error(e)
           })
 
         }
