@@ -6,54 +6,289 @@
     <title>单词列表</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #app {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .user-info {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .word-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .word-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+
+        .word-item summary {
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .trans {
+            color: #666;
+            margin-left: 10px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .remember-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .remember-btn:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 600px) {
+            #app {
+                padding: 15px;
+            }
+
+            .word-item {
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .trans {
+                margin-left: 0;
+            }
+
+            .remember-btn {
+                align-self: flex-end;
+            }
+        }
+    </style>
 
 </head>
+
 <body>
-    
-<div id="app">
-    <div>
-        {{currentUser ? currentUser.get('username') : ''}}
+
+    <div id="app">
+        <div class="user-info">
+            用户 {{currentUser ? currentUser.get('username') : ''}}
+        </div>
+        <div class="word-list">
+            <details v-for="word in words_list" :key="word['word']" class="word-item" @toggle="onToggle(word.word)">
+                <summary class="word">{{ word['word'] }}</summary>
+                <span class="trans">
+                    <div v-for="trs in word.trans" :key="trs.pos">
+                        <span class="pos">{{ trs.pos }}</span>
+                        <span class="tran">{{ trs.tran }}</span>
+                    </div>
+                </span>
+                <span class="trans">查看次数：{{ word['count'] }}</span>
+                <button class="remember-btn" v-if="word['count'] != word['mastery']"
+                    @click="toMastery(word['word'])">记住了</button>
+            </details>
+        </div>
     </div>
-    <div v-for="word in words_list" :key="word.id">
-        {{word.get('word')}}
-    </div>
-    <!-- {{words_list}} -->
-</div>
 
 </body>
 <script type="module">
-    const { createApp, ref, computed, reactive, h, onMounted } = Vue;
+    const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
     import { getUserWords } from './js/ClassUserWords.js'
 
     // 初始化 Parse
-    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
     Parse.serverURL = 'https://parse.glwsq.cn/parse';
 
-    createApp({
-      setup() {
-        const currentUser = ref(Parse.User.current());
-        let words_list = ref([]);
-        function logout() {
-          Parse.User.logOut();
-          currentUser.value = null;
-            window.location.href = '/login.html';
-        }
-        onMounted(() => {
-            if (!currentUser.value) {
-                window.location.href = '/login.html';
+    async function getUserWordsCountEqMaster(user) {
+        // 第一步：查询 UserWords 类以获取单词列表
+        const UserWords = Parse.Object.extend('UserWords');
+        const queryUserWords = new Parse.Query(UserWords);
+        // queryUserWords.equalTo('user', user);
+        // 查询 count 字段 不等于 mastery 字段
+        // queryUserWords.notEqualTo('count', 'mastery');
+        // 按照 count 字段升序排列
+        // queryUserWords.descending('count');
+        // queryUserWords.descending('updatedAt');
+        queryUserWords.ascending('updatedAt');
+        // queryUserWords.descending('updated');
+        queryUserWords.limit(50)
+        const results = await queryUserWords.find()
+        console.log('res', results)
+        // 在代码中过滤 count 和 mastery 不等的记录
+        const filteredResults = results.filter(userWord => userWord.get('count') !== userWord.get('mastery'));
+        console.log('filtered results', filteredResults);
+        return filteredResults
+    }
+
+    async function getUserWordsLearn(user) {
+        const userWords = await getUserWordsCountEqMaster(user)
+        // console.log(userWords)
+        let word_list = []
+
+
+
+        // console.log(userWords)
+        // 从查询结果中提取所有单词
+        const words = userWords.map(uw => uw.get("word"));
+        const words_all = userWords.map(uw => {
+            const res = {
+                'word': uw.get("word"),
+                'count': uw.get("count"),
+                'mastery': uw.get("mastery")
             }
-            getUserWords().then((words) => {
-                console.log(words)
-                
-                words_list.value = words;
-            });
+            return res
+        });
+        const words_dict = words_all.reduce((acc, wordObj) => {
+            acc[wordObj.word] = {
+                count: wordObj.count,
+                mastery: wordObj.mastery
+            };
+            return acc;
+        }, {});
+        console.log(words);
+        // 第二步：基于这些单词查询 Translation 类
+        const queryTranslation = new Parse.Query("Translation");
+        queryTranslation.containedIn("word", words);  // 假设 Translation 类中有一个 'word' 字段，存储具体单词
+        // 查询 class Translation 的 translation 字段，这个字段是一个json，里面有 'ec' 子字段的项目
+        // queryTranslation.select('translation.haha');
+
+        const translations = await queryTranslation.find()
+        let pos = 0
+        await translations.forEach((translation) => {
+            console.log(`Word: ${translation.get("word")}`);
+            const word = translation.get("word")
+            const translation_fild = translation.get("translation");
+            const ec = translation_fild.ec;
+            if (ec) {
+                if (ec['exam_type']) {
+                    console.log(`考试分类: ${ec['exam_type']}`);
+
+                    //         <div v-for="trs in youdao.ec.word.trs" :key="trs.pos">
+                    //   <span class="pos">{{ trs.pos }}</span>
+                    //   <span class="tran">{{ trs.tran }}</span>
+                    // </div>
+                    const trs = ec.word.trs
+
+
+                    // console.log(`Translation: ${JSON.stringify(ec)}`);
+                    console.log(`${JSON.stringify(ec['web_trans'])}`)
+                    console.log(ec['web_trans'].join(','))
+                    word_list.push({
+                        word: translation.get("word"),
+                        trans: trs,
+                        count: words_dict[word]['count'],
+                        mastery: words_dict[word]['mastery'],
+                    })
+                }
+            }
+            // console.log(`Translation: ${JSON.stringify(translation.get("translation"))}`);
         });
 
-        return { 
-            currentUser, logout, words_list
-        };
-      }
+        return word_list
+
+    }
+
+    createApp({
+        setup() {
+            const currentUser = ref(Parse.User.current());
+            let words_list = ref([{ 'word': 'word', 'trans': '你好', 'count': 1, 'mastery': 2 }]);
+            function logout() {
+                Parse.User.logOut();
+                currentUser.value = null;
+                window.location.href = '/login.html';
+            }
+            function toMastery(word) {
+                // 选中的单词 mastery == count
+                const UserWords = Parse.Object.extend('UserWords');
+                const query = new Parse.Query(UserWords);
+                query.equalTo('user', currentUser.value);
+                query.equalTo('word', word);
+                query.first().then(userWord => {
+                    if (userWord) {
+                        // 让 mastery 等于 count
+                        userWord.set('mastery', userWord.get('count'));
+                        userWord.save();
+                        const index = words_list.value.findIndex(item => item.word === word);
+                        // words_list.value[index].mastery = userWord.get('count');
+                        // console.log(words_list.value[index], userWord.get('count'), userWord.get('mastery'))
+                        this.words_list.splice(index, 1);
+                        // 刷新文章内容
+                        // selectArticle(selectedArticle.value);
+
+                    }
+                });
+            }
+            onMounted(() => {
+                if (!currentUser.value) {
+                    window.location.href = '/login.html';
+                }
+                getUserWordsLearn(currentUser).then(res => {
+                    // nextTick(() => {
+                    words_list.value = res
+                    console.log("res:", res)
+                    // })
+
+                })
+
+            });
+            function onToggle(word) {
+                console.log(word)
+                const UserWords = Parse.Object.extend('UserWords');
+                const query = new Parse.Query(UserWords);
+                query.equalTo('user', currentUser.value);
+                query.equalTo('word', word);
+                query.first().then(userWord => {
+                    if (userWord) {
+                        userWord.increment('count');
+                        userWord.save();
+                        const index = words_list.value.findIndex(item => item.word === word);
+                        // console.log('index', index)
+                        console.log(words_list.value)
+                        if (index !== -1) {
+                            words_list.value[index].count++;
+                        }
+                    }
+                })
+            }
+
+            return {
+                currentUser, logout, words_list, toMastery, onToggle
+            };
+        }
     }).mount('#app');
-  </script>
+</script>
 
 </html>
