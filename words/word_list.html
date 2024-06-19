@@ -133,25 +133,39 @@
     Parse.serverURL = 'https://parse.glwsq.cn/parse';
 
     async function getUserWordsCountEqMaster(user) {
-        // 第一步：查询 UserWords 类以获取单词列表
-        const UserWords = Parse.Object.extend('UserWords');
-        const queryUserWords = new Parse.Query(UserWords);
-        // queryUserWords.equalTo('user', user);
-        // 查询 count 字段 不等于 mastery 字段
-        // queryUserWords.notEqualTo('count', 'mastery');
-        // 按照 count 字段升序排列
-        // queryUserWords.descending('count');
-        // queryUserWords.descending('updatedAt');
-        queryUserWords.ascending('updatedAt');
-        // queryUserWords.descending('updated');
-        queryUserWords.limit(50)
-        const results = await queryUserWords.find()
-        console.log('res', results)
+    // 第一步：查询 UserWords 类以获取单词列表
+    const UserWords = Parse.Object.extend('UserWords');
+    const queryUserWords = new Parse.Query(UserWords);
+    queryUserWords.equalTo('user', user.value);
+    queryUserWords.ascending('updatedAt');
+    
+    
+    let filteredResults = [];
+    let skip = 0;
+    const batchSize = 100; // 每次查询获取的记录数量
+
+    while (filteredResults.length < 50) {
+        queryUserWords.limit(batchSize);
+        queryUserWords.skip(skip);
+        const results = await queryUserWords.find();
+        console.log('res', results);
+
         // 在代码中过滤 count 和 mastery 不等的记录
-        const filteredResults = results.filter(userWord => userWord.get('count') !== userWord.get('mastery'));
-        console.log('filtered results', filteredResults);
-        return filteredResults
+        const batchFilteredResults = results.filter(userWord => userWord.get('count') !== userWord.get('mastery'));
+        console.log('batch filtered results', batchFilteredResults);
+        filteredResults = filteredResults.concat(batchFilteredResults);
+        console.log("skip", skip, filteredResults.length)
+        // 如果没有更多记录了，提前退出循环
+        if (results.length < batchSize) {
+            break;
+        }
+        
+        skip += batchSize;
     }
+
+    // 只返回前50个过滤后的结果
+    return filteredResults.slice(0, 50);
+}
 
     async function getUserWordsLearn(user) {
         const userWords = await getUserWordsCountEqMaster(user)
