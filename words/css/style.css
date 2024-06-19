@@ -232,3 +232,85 @@
     background-color: #3a8ee6;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
+
+
+
+  .article-translation {
+    /* 整体容器样式 */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  h3, h4 {
+    margin-bottom: 5px;
+  }
+  
+  .selected-text, .selected-text-trans {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 3px;
+  }
+  
+  .word-mastery {
+    margin-top: 15px;
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #eee;
+    border-radius: 5px;
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  
+  .percentage {
+    margin-left: 10px;
+  }
+  
+      .youdao {
+        /* 整体容器样式 */
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      
+      .separator {
+        /* 分割线样式 */
+        margin: 10px 0;
+        border-color: #eee;
+      }
+      
+      .exam-types span {
+        /* 考试类型标签样式 */
+        margin-right: 5px;
+      }
+      .word-translations {
+        font-size: 20px;
+        
+        font-family: 微软雅黑, Arial, sans-serif;
+      }
+      .word-translations .pos {
+        /* 词性样式 */
+        font-weight: bold;
+        margin-right: 5px;
+        
+      }
+      
+      .past-exam-sents .sent {
+        /* 例句容器样式 */
+        margin-bottom: 10px;
+      }
+      
+      .past-exam-sents .en {
+        /* 英文例句样式 */
+        font-style: italic;
+        font-size: 20px;
+      }

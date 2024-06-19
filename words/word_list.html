@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词列表</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+
+</head>
+<body>
+    
+<div id="app">
+    <div>
+        {{currentUser ? currentUser.get('username') : ''}}
+    </div>
+    <div v-for="word in words_list" :key="word.id">
+        {{word.get('word')}}
+    </div>
+    <!-- {{words_list}} -->
+</div>
+
+</body>
+<script type="module">
+    const { createApp, ref, computed, reactive, h, onMounted } = Vue;
+    import { getUserWords } from './js/ClassUserWords.js'
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY"); 
+    Parse.serverURL = 'https://parse.glwsq.cn/parse';
+
+    createApp({
+      setup() {
+        const currentUser = ref(Parse.User.current());
+        let words_list = ref([]);
+        function logout() {
+          Parse.User.logOut();
+          currentUser.value = null;
+            window.location.href = '/login.html';
+        }
+        onMounted(() => {
+            if (!currentUser.value) {
+                window.location.href = '/login.html';
+            }
+            getUserWords().then((words) => {
+                console.log(words)
+                
+                words_list.value = words;
+            });
+        });
+
+        return { 
+            currentUser, logout, words_list
+        };
+      }
+    }).mount('#app');
+  </script>
+
+</html>
