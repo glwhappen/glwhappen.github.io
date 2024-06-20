@@ -143,11 +143,12 @@
     const UserWords = Parse.Object.extend('UserWords');
     const queryUserWords = new Parse.Query(UserWords);
     queryUserWords.equalTo('user', user.value);
+    queryUserWords.ascending('updatedAt'); // 按照更新时间升序排列 从旧到新
     queryUserWords.notEqualTo('masteryed', true);
     queryUserWords.notEqualTo('exam', false);
-    queryUserWords.ascending('updatedAt');
     
     
+    // queryUserWords.descending('updatedAt'); // 按照 count 降序排列
     let filteredResults = [];
     let skip = 0;
     const batchSize = 30; // 每次查询获取的记录数量
@@ -220,7 +221,7 @@
         console.log("未找到的单词：", notFoundWords);
         notFoundWords.forEach(word => {
             getYoudao(word).then(res => {
-                console.log(res)
+                console.log("youdao " + word, res)
                 const Translation = Parse.Object.extend("Translation");
                 const translation = new Translation();
                 translation.set("word", word);
@@ -230,14 +231,14 @@
         })
 
         let pos = 0
-        await translations.forEach(async (translation) => {
+        await translations.forEach((translation) => {
             // console.log(`Word: ${translation.get("word")}`);
             const word = translation.get("word")
             const translation_fild = translation.get("translation");
             const ec = translation_fild.ec;
             if (ec) {
                 if (ec['exam_type']) {
-                    // console.log(`考试分类: ${ec['exam_type']}`);
+                    console.log(`考试分类: ${ec['exam_type']}`);
 
                     //         <div v-for="trs in youdao.ec.word.trs" :key="trs.pos">
                     //   <span class="pos">{{ trs.pos }}</span>
@@ -245,16 +246,16 @@
                     // </div>
                     const trs = ec.word.trs
                     // getSyllableSplit
-                    console.log("syllable_split", translation.get("syllable_split"))
-                    let syllable_split = word
-                    if (!translation.get("syllable_split")) {
-                        syllable_split = await getSyllableSplit(word)
-                        translation.set("syllable_split", syllable_split)
-                        translation.save()
-                    } else {
-                        console.log("syllable_split", translation.get("syllable_split"))
-                        syllable_split = translation.get("syllable_split")
-                    }
+                    // console.log("syllable_split", translation.get("syllable_split"))
+                    // let syllable_split = word
+                    // if (!translation.get("syllable_split")) {
+                    //     syllable_split = await getSyllableSplit(word)
+                    //     translation.set("syllable_split", syllable_split)
+                    //     translation.save()
+                    // } else {
+                    //     console.log("syllable_split cache:", translation.get("syllable_split"))
+                    //     syllable_split = translation.get("syllable_split")
+                    // }
 
 
 
@@ -265,15 +266,24 @@
                         word: translation.get("word"),
                         show: translation.get("word"),
                         trans: trs,
-                        syllable_split,
+                        syllable_split: translation.get("syllable_split"),
                         count: words_dict[word]['count'],
                         mastery: words_dict[word]['mastery'],
                         exam_type: ec['exam_type'],
                     })
+                    console.log("添加到wrod_list", word_list)
+                    // 如果 exam 字段不存在，设置 exam 字段并保存
+                    if (words_dict[word]['row'].get('exam') == undefined) {
+                        words_dict[word]['row'].set('exam', true)
+                        words_dict[word]['row'].save()
+                    }
                 } else {
                     console.log("单词没有考试信息：", words_dict[word]['row'])
-                    words_dict[word]['row'].set('exam', false)
-                    words_dict[word]['row'].save()
+                    if (words_dict[word]['row'].get('exam') == undefined) {
+                        words_dict[word]['row'].set('exam', false)
+                        words_dict[word]['row'].save()
+                    }
+
                 }
             } else {
                 // translation
@@ -281,13 +291,25 @@
                 console.log("单词没有ec信息：", words_dict[word]['row'])
                 // 删除
                 // words_dict[word]['row'].destroy()
-                words_dict[word]['row'].set('exam', false)
-                words_dict[word]['row'].save()
+                if (words_dict[word]['row'].get('exam') == undefined) {
+                    words_dict[word]['row'].set('exam', false)
+                    words_dict[word]['row'].save()
+                }
+
 
 
             }
             // console.log(`Translation: ${JSON.stringify(translation.get("translation"))}`);
         });
+        console.log("jieshu", word_list)
+        // 遍历words_list，如果syllable_split为空，调用 异步函数 getSyllableSplit 并且不影响返回结果
+        word_list.forEach(async (word) => {
+            if (!word.syllable_split) {
+                word.syllable_split = await getSyllableSplit(word.word)
+            }
+        })
+
+
 
         return word_list
 
@@ -296,7 +318,7 @@
     createApp({
         setup() {
             const currentUser = ref(Parse.User.current());
-            let words_list = ref([{ 'word': 'word', 'trans': '你好', 'count': 1, 'mastery': 2 }]);
+            let words_list = ref([{ 'show': '加载中', 'word': 'word', 'trans': '你好', 'count': 1, 'mastery': 2 }]);
             function logout() {
                 Parse.User.logOut();
                 currentUser.value = null;
@@ -313,6 +335,8 @@
                         // 让 mastery 等于 count
                         userWord.set('mastery', userWord.get('count'));
                         userWord.set('masteryed', true);
+                        // 添加最后一次学习时间
+                        userWord.set('last_learn', new Date());
                         userWord.save();
                         const index = words_list.value.findIndex(item => item.word === word);
                         words_list.value[index].mastery = userWord.get('count');
@@ -354,6 +378,8 @@
                     if (userWord) {
                         userWord.increment('count');
                         userWord.set('masteryed', false);
+                        // 添加最后一次学习时间
+                        userWord.set('last_learn', new Date());
                         userWord.save();
                         const index = words_list.value.findIndex(item => item.word === word.wrod);
                         // console.log('index', index)
