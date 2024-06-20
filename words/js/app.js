@@ -371,7 +371,7 @@ const app = createApp({
         jieba_data.value = {}
         split_word.value = ''
         // 小于3个单词，再调用有道翻译
-        if (selectedText.value.trim().split(' ').length <= 7) {
+        if (selectedText.value.trim().split(' ').length <= 3) {
           getYoudao(selectedText.value.trim()).then(res => {
             youdao.value = res
             console.log('youdao', res)
