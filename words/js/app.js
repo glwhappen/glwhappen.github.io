@@ -1,6 +1,6 @@
 const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
 import { fetchArticles, fetchPublicArticles } from './articles.js';
-import { searchWordHandler } from "./translate.js";
+import { searchWordHandler, deepl } from "./translate.js";
 import { getSyllableSplit, getYoudao } from "./english.js";
 import { fixBrokenSentences } from './fixBrokenSentences.js'
 import { findWords } from './word.js'
@@ -361,8 +361,9 @@ const app = createApp({
         console.log('选中的文本:', selectedText.value);
         // 在这里执行您想要的操作
         play(selectedText.value)
-        searchWordHandler(selectedText.value).then(res => {
-          selectedTextTrans.value = res
+        selectedTextTrans.value = ''
+        deepl(selectedText.value).then(res => {
+          selectedTextTrans.value = res.result[0]['text']
           console.log('翻译结果:', res);
         })
         // 检查是否是一个单词

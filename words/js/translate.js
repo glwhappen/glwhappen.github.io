@@ -57,3 +57,22 @@ export async function searchWordHandler(searchWord) {
     }
 }
 
+export async function deepl(text) {
+    const res = await fetch('https://parse.glwsq.cn/parse/functions/deepl', {
+        method: 'POST',
+        headers: {
+            'X-Parse-Application-Id': 'happen-app',
+            'Content-Type': 'application/json'
+        },
+        // body: '{\n    "text": ["I have the number of a really good affordable computer repair shop at home."],\n    "lang": "ZH"\n}',
+        body: JSON.stringify({
+            'text': [
+                text
+            ],
+            'lang': 'ZH'
+        })
+    });
+    const data = await res.json();
+    console.log(data);
+    return data;
+}
