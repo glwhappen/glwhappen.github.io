@@ -363,7 +363,7 @@
 
             });
             function onToggle(event, word) {
-                console.log(event['newState'], word)
+                console.log(event['newState'], word, word.word)
                 if (event['newState'] == 'open') {
                     word.show = word.syllable_split
                 } else {
@@ -373,7 +373,7 @@
                 const UserWords = Parse.Object.extend('UserWords');
                 const query = new Parse.Query(UserWords);
                 query.equalTo('user', currentUser.value);
-                query.equalTo('word', word.wrod);
+                query.equalTo('word', word.word);
                 query.first().then(userWord => {
                     if (userWord) {
                         userWord.increment('count');
@@ -381,8 +381,8 @@
                         // 添加最后一次学习时间
                         userWord.set('last_learn', new Date());
                         userWord.save();
-                        const index = words_list.value.findIndex(item => item.word === word.wrod);
-                        // console.log('index', index)
+                        const index = words_list.value.findIndex(item => item.word === word.word);
+                        console.log('index', index)
                         console.log(words_list.value)
                         if (index !== -1) {
                             words_list.value[index].count++;
