@@ -76,6 +76,10 @@
         .remember-btn:hover {
             background-color: #218838;
         }
+        .remember-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
 
         @media (max-width: 600px) {
             #app {
@@ -108,8 +112,8 @@
             用户 {{currentUser ? currentUser.get('username') : ''}}
         </div>
         <div class="word-list">
-            <details v-for="word in words_list" :key="word['word']" class="word-item" @toggle="onToggle(word.word)">
-                <summary class="word">{{ word['word'] }}</summary>
+            <details v-for="word in words_list" :key="word['word']" class="word-item" @toggle="onToggle($event, word)">
+                <summary class="word">{{ word['show'] }}</summary>
                 <span class="trans">
                     <div v-for="trs in word.trans" :key="trs.pos">
                         <span class="pos">{{ trs.pos }}</span>
@@ -118,7 +122,7 @@
                 </span>
                 <span class="trans">查看次数：{{ word['count'] }}</span>
                 <span class="trans">{{ word['exam_type'] && word['exam_type'].join(',') }}</span>
-                <button class="remember-btn"
+                <button class="remember-btn" v-if="word && word['mastery'] !== word['count']"
                     @click="toMastery(word['word'])">记住了</button>
             </details>
         </div>
@@ -128,7 +132,7 @@
 <script type="module">
     const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
     import { getUserWords } from './js/ClassUserWords.js'
-    import { getYoudao, play } from './js/english.js'
+    import { getYoudao, play, getSyllableSplit } from './js/english.js'
 
     // 初始化 Parse
     Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
@@ -146,9 +150,9 @@
     
     let filteredResults = [];
     let skip = 0;
-    const batchSize = 100; // 每次查询获取的记录数量
+    const batchSize = 30; // 每次查询获取的记录数量
 
-    while (filteredResults.length < 50) {
+    while (filteredResults.length < 20) {
         queryUserWords.limit(batchSize);
         queryUserWords.skip(skip);
         const results = await queryUserWords.find();
@@ -170,7 +174,7 @@
     }
 
     // 只返回前50个过滤后的结果
-    return filteredResults.slice(0, 50);
+    return filteredResults.slice(0, 20);
 }
 
     async function getUserWordsLearn(user) {
@@ -188,6 +192,7 @@
                 'word': uw.get("word"),
                 'count': uw.get("count"),
                 'mastery': uw.get("mastery"),
+                masteryed: uw.get("masteryed"),
                 'row': uw
             }
             return res
@@ -225,7 +230,7 @@
         })
 
         let pos = 0
-        await translations.forEach((translation) => {
+        await translations.forEach(async (translation) => {
             // console.log(`Word: ${translation.get("word")}`);
             const word = translation.get("word")
             const translation_fild = translation.get("translation");
@@ -239,6 +244,18 @@
                     //   <span class="tran">{{ trs.tran }}</span>
                     // </div>
                     const trs = ec.word.trs
+                    // getSyllableSplit
+                    console.log("syllable_split", translation.get("syllable_split"))
+                    let syllable_split = word
+                    if (!translation.get("syllable_split")) {
+                        syllable_split = await getSyllableSplit(word)
+                        translation.set("syllable_split", syllable_split)
+                        translation.save()
+                    } else {
+                        console.log("syllable_split", translation.get("syllable_split"))
+                        syllable_split = translation.get("syllable_split")
+                    }
+
 
 
                     // console.log(`Translation: ${JSON.stringify(ec)}`);
@@ -246,7 +263,9 @@
                     // console.log(ec['web_trans'].join(','))
                     word_list.push({
                         word: translation.get("word"),
+                        show: translation.get("word"),
                         trans: trs,
+                        syllable_split,
                         count: words_dict[word]['count'],
                         mastery: words_dict[word]['mastery'],
                         exam_type: ec['exam_type'],
@@ -296,9 +315,10 @@
                         userWord.set('masteryed', true);
                         userWord.save();
                         const index = words_list.value.findIndex(item => item.word === word);
-                        // words_list.value[index].mastery = userWord.get('count');
+                        words_list.value[index].mastery = userWord.get('count');
+                        words_list.value[index].masteryed = true
                         // console.log(words_list.value[index], userWord.get('count'), userWord.get('mastery'))
-                        this.words_list.splice(index, 1);
+                        // this.words_list.splice(index, 1);
                         // 刷新文章内容
                         // selectArticle(selectedArticle.value);
 
@@ -318,19 +338,24 @@
                 })
 
             });
-            function onToggle(word) {
-                console.log(word)
-                play(word)
+            function onToggle(event, word) {
+                console.log(event['newState'], word)
+                if (event['newState'] == 'open') {
+                    word.show = word.syllable_split
+                } else {
+                    word.show = word.word
+                }
+                play(word.word)
                 const UserWords = Parse.Object.extend('UserWords');
                 const query = new Parse.Query(UserWords);
                 query.equalTo('user', currentUser.value);
-                query.equalTo('word', word);
+                query.equalTo('word', word.wrod);
                 query.first().then(userWord => {
                     if (userWord) {
                         userWord.increment('count');
                         userWord.set('masteryed', false);
                         userWord.save();
-                        const index = words_list.value.findIndex(item => item.word === word);
+                        const index = words_list.value.findIndex(item => item.word === word.wrod);
                         // console.log('index', index)
                         console.log(words_list.value)
                         if (index !== -1) {
