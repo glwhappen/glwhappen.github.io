@@ -117,16 +117,18 @@
                     </div>
                 </span>
                 <span class="trans">查看次数：{{ word['count'] }}</span>
-                <button class="remember-btn" v-if="word['count'] != word['mastery']"
+                <span class="trans">{{ word['exam_type'] && word['exam_type'].join(',') }}</span>
+                <button class="remember-btn"
                     @click="toMastery(word['word'])">记住了</button>
             </details>
         </div>
     </div>
-
+    <audio id="voice" src="http://dict.youdao.com/dictvoice?type=0&audio=apple"></audio>
 </body>
 <script type="module">
     const { createApp, ref, computed, reactive, h, onMounted, nextTick } = Vue;
     import { getUserWords } from './js/ClassUserWords.js'
+    import { getYoudao, play } from './js/english.js'
 
     // 初始化 Parse
     Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
@@ -137,6 +139,8 @@
     const UserWords = Parse.Object.extend('UserWords');
     const queryUserWords = new Parse.Query(UserWords);
     queryUserWords.equalTo('user', user.value);
+    queryUserWords.notEqualTo('masteryed', true);
+    queryUserWords.notEqualTo('exam', false);
     queryUserWords.ascending('updatedAt');
     
     
@@ -150,8 +154,10 @@
         const results = await queryUserWords.find();
         console.log('res', results);
 
-        // 在代码中过滤 count 和 mastery 不等的记录
-        const batchFilteredResults = results.filter(userWord => userWord.get('count') !== userWord.get('mastery'));
+        // // 在代码中过滤 count 和 mastery 不等的记录
+        // const batchFilteredResults = results.filter(userWord => userWord.get('count') !== userWord.get('mastery'));
+        const batchFilteredResults = results;
+
         console.log('batch filtered results', batchFilteredResults);
         filteredResults = filteredResults.concat(batchFilteredResults);
         console.log("skip", skip, filteredResults.length)
@@ -181,14 +187,16 @@
             const res = {
                 'word': uw.get("word"),
                 'count': uw.get("count"),
-                'mastery': uw.get("mastery")
+                'mastery': uw.get("mastery"),
+                'row': uw
             }
             return res
         });
         const words_dict = words_all.reduce((acc, wordObj) => {
             acc[wordObj.word] = {
                 count: wordObj.count,
-                mastery: wordObj.mastery
+                mastery: wordObj.mastery,
+                row: wordObj.row
             };
             return acc;
         }, {});
@@ -196,19 +204,35 @@
         // 第二步：基于这些单词查询 Translation 类
         const queryTranslation = new Parse.Query("Translation");
         queryTranslation.containedIn("word", words);  // 假设 Translation 类中有一个 'word' 字段，存储具体单词
-        // 查询 class Translation 的 translation 字段，这个字段是一个json，里面有 'ec' 子字段的项目
-        // queryTranslation.select('translation.haha');
 
         const translations = await queryTranslation.find()
+
+        // 提取查询到的翻译单词
+        const foundWords = translations.map(t => t.get("word"));
+
+        // 使用 filter 方法找出没有查询到翻译的单词
+        const notFoundWords = words.filter(word => !foundWords.includes(word));
+        console.log("未找到的单词：", notFoundWords);
+        notFoundWords.forEach(word => {
+            getYoudao(word).then(res => {
+                console.log(res)
+                const Translation = Parse.Object.extend("Translation");
+                const translation = new Translation();
+                translation.set("word", word);
+                translation.set("translation", res);
+                translation.save()
+            })
+        })
+
         let pos = 0
         await translations.forEach((translation) => {
-            console.log(`Word: ${translation.get("word")}`);
+            // console.log(`Word: ${translation.get("word")}`);
             const word = translation.get("word")
             const translation_fild = translation.get("translation");
             const ec = translation_fild.ec;
             if (ec) {
                 if (ec['exam_type']) {
-                    console.log(`考试分类: ${ec['exam_type']}`);
+                    // console.log(`考试分类: ${ec['exam_type']}`);
 
                     //         <div v-for="trs in youdao.ec.word.trs" :key="trs.pos">
                     //   <span class="pos">{{ trs.pos }}</span>
@@ -218,15 +242,30 @@
 
 
                     // console.log(`Translation: ${JSON.stringify(ec)}`);
-                    console.log(`${JSON.stringify(ec['web_trans'])}`)
-                    console.log(ec['web_trans'].join(','))
+                    // console.log(`${JSON.stringify(ec['web_trans'])}`)
+                    // console.log(ec['web_trans'].join(','))
                     word_list.push({
                         word: translation.get("word"),
                         trans: trs,
                         count: words_dict[word]['count'],
                         mastery: words_dict[word]['mastery'],
+                        exam_type: ec['exam_type'],
                     })
+                } else {
+                    console.log("单词没有考试信息：", words_dict[word]['row'])
+                    words_dict[word]['row'].set('exam', false)
+                    words_dict[word]['row'].save()
                 }
+            } else {
+                // translation
+                // 设置 translation 字段并保存
+                console.log("单词没有ec信息：", words_dict[word]['row'])
+                // 删除
+                // words_dict[word]['row'].destroy()
+                words_dict[word]['row'].set('exam', false)
+                words_dict[word]['row'].save()
+
+
             }
             // console.log(`Translation: ${JSON.stringify(translation.get("translation"))}`);
         });
@@ -254,6 +293,7 @@
                     if (userWord) {
                         // 让 mastery 等于 count
                         userWord.set('mastery', userWord.get('count'));
+                        userWord.set('masteryed', true);
                         userWord.save();
                         const index = words_list.value.findIndex(item => item.word === word);
                         // words_list.value[index].mastery = userWord.get('count');
@@ -280,6 +320,7 @@
             });
             function onToggle(word) {
                 console.log(word)
+                play(word)
                 const UserWords = Parse.Object.extend('UserWords');
                 const query = new Parse.Query(UserWords);
                 query.equalTo('user', currentUser.value);
@@ -287,6 +328,7 @@
                 query.first().then(userWord => {
                     if (userWord) {
                         userWord.increment('count');
+                        userWord.set('masteryed', false);
                         userWord.save();
                         const index = words_list.value.findIndex(item => item.word === word);
                         // console.log('index', index)

@@ -73,6 +73,35 @@ export async function getYoudao(word) {
 //     }
 // }
 
+
+export function play(text, style = '英式') {
+
+  let type = 0
+  if (style === '英式') {
+    type = 1
+  } else if (style === '美式') {
+    type = 2
+  } else {
+    return
+  }
+  var voice = document.getElementById('voice'); //获取到audio元素
+  voice.src = 'http://dict.youdao.com/dictvoice?type=' + type + '&audio=' + text;
+  if (voice.paused) { //判断音乐是否在播放中，暂停状态
+    voice.play(); //音乐播放
+    // nextTick(() => {
+    //   voice.play().catch(error => {
+    //     voice.src = 'http://dict.youdao.com/dictvoice?type=' + type + '&audio=' + text;
+    //     console.log(`重试播放失败: ${text},${voice.src}, ${error}`);
+    //     voice.play().catch(e => console.error(`重试播放失败: ${text}, ${e}`));
+    //   });
+    // })
+
+
+  } else { //播放状态
+    voice.pause(); //音乐停止
+  }
+}
+
 // 使用异步函数来请求音节划分
 (async () => {
     try {

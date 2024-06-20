@@ -405,6 +405,7 @@ const app = createApp({
           query.first().then(userWord => {
             if (userWord) {
               userWord.increment('count');
+              userWord.set('masteryed', false);
               userWord.save();
               const index = word_list.value.findIndex(item => item.word === word);
               // console.log('index', index)
@@ -521,6 +522,7 @@ const app = createApp({
         if (userWord) {
           // 让 mastery 等于 count
           userWord.set('mastery', userWord.get('count'));
+          userWord.set('masteryed', true);
           userWord.save();
           const index = word_list.value.findIndex(item => item.word === word);
           word_list.value[index].mastery = userWord.get('count');
