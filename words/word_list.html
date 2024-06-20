@@ -53,6 +53,10 @@
             color: #333;
             cursor: pointer;
             list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 20px;
         }
 
         .trans {
@@ -66,11 +70,10 @@
             background-color: #28a745;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 40px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 10px;
         }
 
         .remember-btn:hover {
@@ -113,7 +116,8 @@
         </div>
         <div class="word-list">
             <details v-for="word in words_list" :key="word['word']" class="word-item" @toggle="onToggle($event, word)">
-                <summary class="word">{{ word['show'] }}</summary>
+                <summary class="word">{{ word['show'] }}                 <button class="remember-btn" v-if="word && word['mastery'] !== word['count'] && word['open']"
+                    @click="toMastery(word['word'])">记住了</button></summary>
                 <span class="trans">
                     <div v-for="trs in word.trans" :key="trs.pos">
                         <span class="pos">{{ trs.pos }}</span>
@@ -122,8 +126,7 @@
                 </span>
                 <span class="trans">查看次数：{{ word['count'] }}</span>
                 <span class="trans">{{ word['exam_type'] && word['exam_type'].join(',') }}</span>
-                <button class="remember-btn" v-if="word && word['mastery'] !== word['count']"
-                    @click="toMastery(word['word'])">记住了</button>
+
             </details>
         </div>
     </div>
@@ -366,8 +369,10 @@
                 console.log(event['newState'], word, word.word)
                 if (event['newState'] == 'open') {
                     word.show = word.syllable_split
+                    word['open'] = true
                 } else {
                     word.show = word.word
+                    word['open'] = false
                 }
                 play(word.word)
                 const UserWords = Parse.Object.extend('UserWords');
