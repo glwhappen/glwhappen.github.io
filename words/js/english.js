@@ -22,7 +22,7 @@ export async function getSyllableSplit(word) {
         // 处理错误
         console.error(error)
         // throw new Error(`Error fetching syllable split: ${error.message}`);
-        return 'word'
+        return word
     }
 }
 

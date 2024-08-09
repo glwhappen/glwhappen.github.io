@@ -3,7 +3,7 @@ import { fetchArticles, fetchPublicArticles } from './articles.js';
 import { searchWordHandler, deepl } from "./translate.js";
 import { getSyllableSplit, getYoudao } from "./english.js";
 import { fixBrokenSentences } from './fixBrokenSentences.js'
-import { findWords } from './word.js'
+import { findWords, translateWord } from './word.js'
 import { jieba } from './jujigeba.js'
 import { getUserWords } from './ClassUserWords.js'
 // 初始化 Parse
@@ -362,20 +362,27 @@ const app = createApp({
         // 在这里执行您想要的操作
         play(selectedText.value)
         selectedTextTrans.value = ''
+        searchWordHandler(selectedText.value).then(res => {
+          selectedTextTrans.value = res
+          console.log('baidu翻译结果:', res);
+        })
         deepl(selectedText.value).then(res => {
           selectedTextTrans.value = res.result[0]['text']
-          console.log('翻译结果:', res);
+          console.log('deepl翻译结果:', res.result[0]['text']);
         })
         // 检查是否是一个单词
         youdao.value = {}
         jujigeba_html.value = ''
         jieba_data.value = {}
         split_word.value = ''
-        // 小于3个单词，再调用有道翻译
-        if (selectedText.value.trim().split(' ').length <= 3) {
+        // 1个单词，再调用有道翻译
+        if (selectedText.value.trim().split(' ').length <= 1) {
           getYoudao(selectedText.value.trim()).then(res => {
-            youdao.value = res
-            console.log('youdao', res)
+            // 如果当前选中的内容没有发生变化，更新翻译结果
+            if (selectedText.value === selection.toString()) {
+              youdao.value = res
+              console.log('youdao', res)
+            }
           })
         }
 
