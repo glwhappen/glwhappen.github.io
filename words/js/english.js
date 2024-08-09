@@ -10,7 +10,7 @@ const baseUrl = 'https://auth.ali.glwsq.cn';
 export async function getSyllableSplit(word) {
     try {
         // 构建请求URL
-        const requestUrl = `${baseUrl}/syllable_split?word=${word}`;
+        const requestUrl = `https://nodered.glwsq.cn/syllable_split?word=${word}`;
 
         // 发起GET请求
         const response = await fetch(requestUrl);
