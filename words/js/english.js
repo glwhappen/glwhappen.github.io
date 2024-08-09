@@ -30,7 +30,7 @@ export async function getSyllableSplit(word) {
 export async function getYoudao(word) {
     try {
       // 构建请求URL
-      const requestUrl = `${baseUrl}/youdao_word?word=${word}`;
+      const requestUrl = `https://nodered.glwsq.cn/youdao?word=${word}`;
   
       // 发起GET请求
       const response = await fetch(requestUrl);
