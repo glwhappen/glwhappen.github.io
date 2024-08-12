@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>句子分析展示</title>
+    <style>
+        span {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        span:hover {
+            background-color: lightyellow;
+        }
+    </style>
+</head>
+<body>
+    <p id="sentence"></p>
+
+    <script>
+        // 第一部分：HTML结构数据
+        const htmlStructure = `The <span id="f6">quick</span> <span id="f7">brown</span> <span id="f0" class="mb">fox</span> <span id="f1" class="bb">jumps</span> <span id="f2">over</span> the <span id="f8">lazy</span> <span id="f9">dog</span><span id="f10" class="rd"> (</span><span id="TS99"><span id="f3">that</span> <span id="f4" class="bl">is</span> <span id="f5" class="bb">sleeping</span></span><span id="f11" class="rd">)</span>.`;
+
+        // 第二部分：数据描述
+        const descriptions = [{"id":"f6","description":"快的，迅速的"},{"id":"f7","description":"棕色的"},{"id":"f0","description":"主语: 狐狸"},{"id":"f1","description":"谓语: 跳"},{"id":"f2","description":"介词: 在...上面"},{"id":"f8","description":"形容词: 懒惰的"},{"id":"f9","description":"主语: 狗"},{"id":"f10","description":"开始定语从句"},{"id":"f3","description":"关系代词: 引导定语从句"},{"id":"f4","description":"助动词: 现在进行时"},{"id":"f5","description":"谓语: 睡觉"},{"id":"f11","description":"结束定语从句"}];
+
+        // 第三部分：语法分析数据
+        const analysis = "1|gd0||1|gd1||1|gd2||1|gd3||1|gd4||1|gd5||1|wd0||1|wd1||1|wd2||1|wd3||3|sd4|TS99|f11||3r|sd4|TS99|f10";
+
+        // 插入HTML结构
+        document.getElementById('sentence').innerHTML = htmlStructure;
+
+        // 应用描述到悬浮文本
+        descriptions.forEach(item => {
+            const element = document.getElementById(item.id);
+            if (element) {
+                element.title = item.description;
+            }
+        });
+    </script>
+</body>
+</html>

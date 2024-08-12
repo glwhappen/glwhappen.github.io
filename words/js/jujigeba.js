@@ -9,18 +9,18 @@ async function get_data(text) {
     
     const requestOptions = {
       method: "POST",
-      headers: myHeaders,
+    //   headers: myHeaders,
       body: raw,
       redirect: "follow"
     };
     try {
-        const response = await fetch("https://parse.glwsq.cn/parse/functions/jujieba", requestOptions)
+        const response = await fetch("https://nodered.glwsq.cn/jujieba", requestOptions)
         const result = await response.json();
-        // console.log(result['result'])
-        const decodedURI = atob(result['result']);
-        const decodedText = decodeURIComponent(decodedURI); 
-        console.log(decodedText)
-        return decodedText;
+        console.log("jujieba", result)
+        // const decodedURI = atob(result['result']);
+        // const decodedText = decodeURIComponent(decodedURI); 
+        // console.log("decodedText",decodedText)
+        return result['result'];
 
         // return result
     } catch (error) {
@@ -30,6 +30,7 @@ async function get_data(text) {
 }
 
 function deal_data(text) {
+    console.log("deal_data", text)
     let res = {
 
     }
@@ -66,7 +67,12 @@ function deal_data(text) {
         console.log("没有找到匹配");
     }
     if (text.split('***#***')[3] != '') {
-        res['grammar'] = text.split('***#***')[3].split('相关语法知识:')[0]
+        try {
+            res['grammar'] = text.split('***#***')[3].split('相关语法知识:')[0]
+        } catch (error) {
+            
+        }
+        
     }
 
     // console.log(res);

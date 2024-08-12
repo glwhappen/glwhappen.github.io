@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>句子分析展示</title>
+    <style>
+        span {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        span:hover {
+            background-color: lightyellow;
+        }
+    </style>
+</head>
+<body>
+    The <span id="f6">quick</span> <span id="f7">brown</span> <span id="f0" class="mb">fox</span> <span id="f1" class="bb">jumps</span> <span id="f2">over</span> the <span id="f8">lazy</span> <span id="f9">dog</span><span id="f10" class="rd" > (</span><span id="TS99"><span id="f3">that</span> <span id="f4" class="bl">is</span> <span id="f5" class="bb">sleeping</span></span><span id="f11" class="rd" >)</span>.
+
+    <script>
+        // 第二部分数据：描述信息
+        const descriptions = [{"d":"gd0","g":"主语","x":"","e":"fox","y":"[fɔks]","c":"4,y","a":"fox","t":"n.","m":"狐狸*狐皮"},{"d":"gd1","g":"谓语","x":"采用一般现在时。动词采用第三人称单数形式。","e":"jump","y":"[dʒʌmp]","c":"4,y","a":"jump","t":"vi.","m":"跳，跃，跳跃*快速移动，突然移动"},{"d":"gd2","g":"介词","x":"","e":"over","y":"['әuvә]","c":"4,y","a":"over","t":"prep.","m":"在...上面*在...期间"},{"d":"gd3","g":"关系代词","x":"引导定语从句。"},{"d":"gd4","g":"助动词","x":""},{"d":"gd5","g":"谓语","x":"采用现在进行时。","e":"sleep","y":"[sli:p]","c":"4,y","a":"sleep","t":"vi.","m":"睡，睡觉，入睡"},{"d":"wd0","e":"quick","y":"[kwik]","c":"4,y","a":"quick","t":"a.","m":"快的，迅速的，时间短暂的*敏捷的，迅速的"},{"d":"wd1","e":"brown","y":"[braun]","c":"4,y","a":"brown","t":"a.","m":"棕色的，褐色的*（皮肤）棕色的，被晒黑的"},{"d":"wd2","e":"lazy","y":"['leizi]","c":"4,y","a":"lazy","t":"a.","m":"懒散的，懒惰的*无精打采的，懒洋洋的"},{"d":"wd3","e":"dog","y":"[dɔg]","c":"4,y","a":"dog","t":"n.","m":"狗*公狐、公狼"},{"d":"sd4","g":"定语从句","x":""}]
+
+        // 第三部分数据：语法分析
+        const analysis = "1|gd0||1|gd1||1|gd2||1|gd3||1|gd4||1|gd5||1|wd0||1|wd1||1|wd2||1|wd3||3|sd4|TS99|f11||3r|sd4|TS99|f10";
+        
+        // 解析语法分析数据，并应用描述到对应HTML元素
+        pos = 0
+        analysis.split('||').forEach(part => {
+            const elements = part.split('|');
+            const index = elements[0];
+            const grammarId = elements[1];
+            console.log("grammarId", grammarId, index)
+
+            // const element = document.getElementById('f' + pos++);
+            // if (element) {
+            //     element.title = item.description;
+            // }
+
+            const desc = descriptions.find(d => d.d === grammarId);
+            if (desc) {
+                const element = document.getElementById('f' + pos++);
+                if (element) {
+                    m = desc.m
+                    if (!m) {
+                        m = ''
+                    }
+                    if (m.includes('*')) {
+                        m = m.replace('*', '\n')
+                    }
+                    t = desc.t
+                    g = desc.g
+                    if (!t) {
+                        element.title = `${desc.g}`;
+                    } else {
+                        if (g) {
+                            element.title = `${desc.g}: \n${desc.t} ${m}`;
+                        } else {
+                            element.title = `${desc.t} ${m}`;
+                        }
+                        
+                    }
+                }
+            }
+        });
+    
+    </script>
+</body>
+</html>

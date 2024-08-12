@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>句子分析展示</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+}
+
+.word {
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.word:hover {
+    color: red;
+    font-weight: bold;
+}
+
+.clause, .mb, .bb, .rd, .bl {
+    font-style: italic;
+}
+
+.rd {
+    color: red;
+}
+
+.bl {
+    color: blue;
+}
+
+    </style>
+</head>
+<body>
+    <p>
+        The <span id="f6">quick</span>
+        <span id="f7">brown</span>
+        <span id="f0" class="mb">fox</span>
+        <span id="f1" class="bb">jumps</span>
+        <span id="f2">over</span>
+        the <span id="f8">lazy</span>
+        <span id="f9">dog</span>
+        <span id="f10" class="rd">(</span>
+        <span id="TS99">
+            <span id="f3">that</span>
+            <span id="f4" class="bl">is</span>
+            <span id="f5" class="bb">sleeping</span>
+        </span>
+        <span id="f11" class="rd">)</span>
+    </p>
+    <script src="script.js"></script>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const elements = document.querySelectorAll('span');
+    elements.forEach(el => {
+        el.addEventListener('mouseover', function() {
+            const info = getInfoById(this.id);
+            this.title = info;
+        });
+    });
+});
+
+function getInfoById(id) {
+    const info = {
+        'f6': '快的，迅速的',
+        'f7': '棕色的',
+        'f0': '主语: 狐狸',
+        'f1': '谓语: 跳',
+        'f2': '介词: 在...上面',
+        'f8': '形容词: 懒惰的',
+        'f9': '主语: 狗',
+        'f10': '开始定语从句',
+        'f3': '关系代词: 引导定语从句',
+        'f4': '助动词: 现在进行时',
+        'f5': '谓语: 睡觉',
+        'f11': '结束定语从句'
+    };
+    return info[id] || '未知信息';
+}
+
+</script>
+</html>
