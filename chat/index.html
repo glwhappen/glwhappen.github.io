@@ -4,21 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anonymous Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chat-container {
+            width: 360px;
+            height: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #chat-header {
+            background-color: #0084ff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #chatbox {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 70%;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .message.other {
+            background-color: #ffffff;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .username {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        #message {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+        }
+        #send-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #send-button:hover {
+            background-color: #006bbd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Anonymous Chat Room</h1>
-    <div id="chatbox" style="height: 300px; overflow-y: scroll; border: 1px solid black;">
+    <div id="chat-container">
+        <div id="chat-header">Anonymous Chat Room</div>
+        <div id="chatbox"></div>
+        <div id="input-container">
+            <input type="text" id="message" placeholder="Type a message" />
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
     </div>
-    <input type="text" id="message" placeholder="Type your message here" />
-    <button onclick="sendMessage()">Send</button>
 
     <script>
         const ws = new WebSocket('ws://nodered.glwsq.cn/ws/chat');
-        
+
+        // Prompt user for a username
+        let username = prompt("Enter your username:");
+        if (!username) {
+            username = 'Anonymous';  // Default to 'Anonymous' if no username provided
+        }
+
         ws.onmessage = function(event) {
             const chatbox = document.getElementById('chatbox');
-            const message = document.createElement('p');
-            message.textContent = event.data;
+            const data = event.data;
+            const parsedData = JSON.parse(data);
+            console.log("收到消息", parsedData);
+            if (!parsedData.username || !parsedData.message) {
+                return;
+            }
+
+            // 用户名等于自己不显示
+            if (parsedData.username === username) {
+                return;
+            }
+
+            // Create message element for incoming messages
+            const message = document.createElement('div');
+            message.className = 'message other';
+
+            const userNameElement = document.createElement('div');
+            userNameElement.className = 'username';
+            userNameElement.textContent = parsedData.username;
+
+            const textElement = document.createElement('div');
+            textElement.textContent = parsedData.message;
+
+            message.appendChild(userNameElement);
+            message.appendChild(textElement);
+
             chatbox.appendChild(message);
             chatbox.scrollTop = chatbox.scrollHeight;
         };
@@ -27,8 +148,35 @@
             const input = document.getElementById('message');
             const message = input.value;
             if (message !== '') {
-                ws.send(message);
+                const chatbox = document.getElementById('chatbox');
+
+                // Create a message object
+                const messageObj = {
+                    username: username,
+                    message: message
+                };
+
+                // Send message as JSON string
+                ws.send(JSON.stringify(messageObj));
+
+                // Display the user's own message on the right
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user';
+
+                const userNameElement = document.createElement('div');
+                userNameElement.className = 'username';
+                userNameElement.textContent = "You";
+
+                const textElement = document.createElement('div');
+                textElement.textContent = message;
+
+                userMessage.appendChild(userNameElement);
+                userMessage.appendChild(textElement);
+
+                chatbox.appendChild(userMessage);
+
                 input.value = '';
+                chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
     </script>
