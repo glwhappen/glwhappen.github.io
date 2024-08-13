@@ -8,7 +8,7 @@ import { jieba } from './jujigeba.js'
 import { getUserWords } from './ClassUserWords.js'
 // 初始化 Parse
 Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
-Parse.serverURL = 'https://parse.glwsq.cn/parse';
+Parse.serverURL = 'https://parse.ali.glwsq.cn/parse';
 
 function deal(article, type = 'times') {
   // this.article  = this.article.replace(/\. (?!\n\n)/g, '. \n\n');
