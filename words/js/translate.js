@@ -58,7 +58,7 @@ export async function searchWordHandler(searchWord) {
 }
 
 export async function deepl(text) {
-    const res = await fetch('https://parse.glwsq.cn/parse/functions/deepl', {
+    const res = await fetch('https://parse.ali.glwsq.cn/parse/functions/deepl', {
         method: 'POST',
         headers: {
             'X-Parse-Application-Id': 'happen-app',
