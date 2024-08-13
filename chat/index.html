@@ -16,8 +16,10 @@
             height: 100vh;
         }
         #chat-container {
-            width: 360px;
-            height: 600px;
+            width: 100%;
+            max-width: 360px;
+            height: 80%;
+            max-height: 600px;
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -98,86 +100,46 @@
         <div id="chat-header">Anonymous Chat Room</div>
         <div id="chatbox"></div>
         <div id="input-container">
-            <input type="text" id="message" placeholder="Type a message" />
+            <input type="text" id="message" placeholder="Type a message" autofocus />
             <button id="send-button" onclick="sendMessage()">Send</button>
         </div>
     </div>
 
     <script>
         const ws = new WebSocket('ws://nodered.glwsq.cn/ws/chat');
+        let username = prompt("Enter your username:") || 'Anonymous';
 
-        // Prompt user for a username
-        let username = prompt("Enter your username:");
-        if (!username) {
-            username = 'Anonymous';  // Default to 'Anonymous' if no username provided
-        }
+        document.getElementById('message').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
 
         ws.onmessage = function(event) {
-            const chatbox = document.getElementById('chatbox');
-            const data = event.data;
-            const parsedData = JSON.parse(data);
-            console.log("收到消息", parsedData);
-            if (!parsedData.username || !parsedData.message) {
-                return;
-            }
-
-            // 用户名等于自己不显示
-            if (parsedData.username === username) {
-                return;
-            }
-
-            // Create message element for incoming messages
-            const message = document.createElement('div');
-            message.className = 'message other';
-
-            const userNameElement = document.createElement('div');
-            userNameElement.className = 'username';
-            userNameElement.textContent = parsedData.username;
-
-            const textElement = document.createElement('div');
-            textElement.textContent = parsedData.message;
-
-            message.appendChild(userNameElement);
-            message.appendChild(textElement);
-
-            chatbox.appendChild(message);
-            chatbox.scrollTop = chatbox.scrollHeight;
+            const data = JSON.parse(event.data);
+            if (data.username === username) return;
+            appendMessage(data.username, data.message, 'other');
         };
 
         function sendMessage() {
             const input = document.getElementById('message');
-            const message = input.value;
-            if (message !== '') {
-                const chatbox = document.getElementById('chatbox');
-
-                // Create a message object
-                const messageObj = {
-                    username: username,
-                    message: message
-                };
-
-                // Send message as JSON string
-                ws.send(JSON.stringify(messageObj));
-
-                // Display the user's own message on the right
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user';
-
-                const userNameElement = document.createElement('div');
-                userNameElement.className = 'username';
-                userNameElement.textContent = "You";
-
-                const textElement = document.createElement('div');
-                textElement.textContent = message;
-
-                userMessage.appendChild(userNameElement);
-                userMessage.appendChild(textElement);
-
-                chatbox.appendChild(userMessage);
-
+            const messageText = input.value.trim();
+            if (messageText) {
+                const messageData = { username, message: messageText };
+                ws.send(JSON.stringify(messageData));
+                appendMessage('You', messageText, 'user');
                 input.value = '';
-                chatbox.scrollTop = chatbox.scrollHeight;
             }
+        }
+
+        function appendMessage(userName, text, type) {
+            const chatbox = document.getElementById('chatbox');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.innerHTML = `<div class="username">${userName}:</div><div>${text}</div>`;
+            chatbox.appendChild(message);
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
     </script>
 </body>
