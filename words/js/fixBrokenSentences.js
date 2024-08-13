@@ -5,41 +5,42 @@ export function fixBrokenSentences(text) {
     let lastLineWasEmpty = false; // Track if the last processed line was empty
 
     lines.forEach((line, index) => {
-        // Trim to remove any starting or trailing white spaces
         line = line.trim();
         if (line) {
-            if (carryOver) {
-                // Combine the carry over text with the current line
-                line = carryOver + ' ' + line;
+            if (line.startsWith('#')) {
+                // Add an empty line before the line starting with #
+                fixedText += '\n' + line + '\n\n';
                 carryOver = ''; // Clear the carry over text
-            }
-            // Check if the line ends with a period or if it's the last line
-            if (!line.endsWith('.') && index !== lines.length - 1) {
-                carryOver = line; // Save the line to carry over to the next line
+                lastLineWasEmpty = false; // Reset the flag
             } else {
-                // Add the complete sentence to the fixed text
-                fixedText += line + '\n';
-                if (lastLineWasEmpty) {
-                    // Add an extra newline if the last line was empty
-                    fixedText += '\n';
-                    lastLineWasEmpty = false; // Reset the flag
+                if (carryOver) {
+                    line = carryOver + ' ' + line;
+                    carryOver = '';
+                }
+                if (!line.endsWith('.') && index !== lines.length - 1) {
+                    carryOver = line;
+                } else {
+                    fixedText += line + '\n';
+                    if (lastLineWasEmpty) {
+                        fixedText += '\n';
+                        lastLineWasEmpty = false;
+                    }
                 }
             }
         } else {
-            // If the line is empty and there's no carryOver, mark it
             if (!carryOver && !lastLineWasEmpty) {
-                lastLineWasEmpty = true; // Set the flag if it's a genuine empty line between sentences
+                lastLineWasEmpty = true;
             }
         }
     });
 
-    // Check if there's any remaining carry over text and add it
     if (carryOver) {
         fixedText += carryOver + '\n';
     }
 
     return fixedText;
 }
+
 
 // Example usage:
 const text = `Deep Neural Networks (DNNs) are prevalent across a broad range of applications. Despite their success, the complexity and opaque
