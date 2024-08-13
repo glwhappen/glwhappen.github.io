@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Chat Room</title>
+</head>
+<body>
+    <h1>Anonymous Chat Room</h1>
+    <div id="chatbox" style="height: 300px; overflow-y: scroll; border: 1px solid black;">
+    </div>
+    <input type="text" id="message" placeholder="Type your message here" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const ws = new WebSocket('ws://nodered.glwsq.cn/ws/chat');
+        
+        ws.onmessage = function(event) {
+            const chatbox = document.getElementById('chatbox');
+            const message = document.createElement('p');
+            message.textContent = event.data;
+            chatbox.appendChild(message);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value;
+            if (message !== '') {
+                ws.send(message);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
