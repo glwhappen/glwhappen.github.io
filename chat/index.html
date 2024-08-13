@@ -161,6 +161,17 @@
             chatbox.appendChild(notification);
             chatbox.scrollTop = chatbox.scrollHeight;
         }
+
+        window.addEventListener('beforeunload', function() {
+            // 发送离开消息
+            if (ws) {
+                ws.send(JSON.stringify({ type: 'notification', message: `${username} has left the chat.` }));
+            }
+            // 关闭 WebSocket 连接
+            ws.close();
+        });
+
+
     </script>
 </body>
 </html>
