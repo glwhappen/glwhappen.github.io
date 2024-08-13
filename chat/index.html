@@ -110,7 +110,7 @@
     </div>
 
     <script>
-        const ws = new WebSocket('ws://nodered.glwsq.cn/ws/chat');
+        const ws = new WebSocket('wss://nodered.glwsq.cn/ws/chat');
         let username = prompt("Enter your username:") || 'Anonymous';
 
         ws.onopen = function() {
