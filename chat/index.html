@@ -43,7 +43,7 @@
             display: flex;
             flex-direction: column;
         }
-        .message {
+        .message, .notification {
             margin: 10px 0;
             padding: 10px;
             border-radius: 5px;
@@ -61,6 +61,10 @@
             background-color: #ffffff;
             align-self: flex-start;
             text-align: left;
+        }
+        .notification {
+            background-color: #f0e68c; /* light yellow for notifications */
+            align-self: center;
         }
         .username {
             font-weight: bold;
@@ -109,6 +113,11 @@
         const ws = new WebSocket('ws://nodered.glwsq.cn/ws/chat');
         let username = prompt("Enter your username:") || 'Anonymous';
 
+        ws.onopen = function() {
+            // Send a notification to all users about this new user
+            ws.send(JSON.stringify({ type: 'notification', message: `${username} has joined the chat.` }));
+        };
+
         document.getElementById('message').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -118,16 +127,18 @@
 
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data);
-            if (data.username === username) return;
-            appendMessage(data.username, data.message, 'other');
+            if (data.type === 'notification') {
+                appendNotification(data.message);
+            } else if (data.username && data.username !== username) {
+                appendMessage(data.username, data.message, 'other');
+            }
         };
 
         function sendMessage() {
             const input = document.getElementById('message');
             const messageText = input.value.trim();
             if (messageText) {
-                const messageData = { username, message: messageText };
-                ws.send(JSON.stringify(messageData));
+                ws.send(JSON.stringify({ username, message: messageText }));
                 appendMessage('You', messageText, 'user');
                 input.value = '';
             }
@@ -139,6 +150,15 @@
             message.className = `message ${type}`;
             message.innerHTML = `<div class="username">${userName}:</div><div>${text}</div>`;
             chatbox.appendChild(message);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function appendNotification(message) {
+            const chatbox = document.getElementById('chatbox');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            chatbox.appendChild(notification);
             chatbox.scrollTop = chatbox.scrollHeight;
         }
     </script>
