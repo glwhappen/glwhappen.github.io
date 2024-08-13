@@ -210,7 +210,7 @@ const app = createApp({
     }
     async function fixBroken(article) {
       console.log(article)
-      article.content = fixBrokenSentences(article.content).replace('', '')
+      article.content = fixBrokenSentences(article.content).replace(/\u0002/g, '');
       updateArticle(article)
       selectArticle(article)
     }
