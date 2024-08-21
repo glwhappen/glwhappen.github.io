@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue 3 笔记卡片系统</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+    }
+
+    #app {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+      background: #e9ecef;
+      padding: 10px;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    input,
+    button {
+      padding: 10px;
+      margin-right: 8px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .note-title {
+      font-weight: bold;
+    }
+
+    .delete-button,
+    .edit-button {
+      position: absolute;
+      top: 2px;
+      right: 10px;
+      background-color: #dc3545;
+    }
+
+    .edit-button {
+      right: 80px;
+      background-color: #ffc107;
+    }
+
+    ul {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <ul ref="noteList">
+      <li v-for="note in notes" :key="note.id">
+        <span class="note-title">{{ note.get('title') }}:</span> {{ note.get('content') }}
+        <button v-if="currentUser && note.get('ACL') && note.get('ACL').getWriteAccess(currentUser.id)" class="edit-button" @click="editNote(note)">编辑</button>
+        <button v-if="currentUser && note.get('ACL') && note.get('ACL').getWriteAccess(currentUser.id)" class="delete-button" @click="deleteNote(note)">删除</button>
+      </li>
+    </ul>
+    <form @submit.prevent="saveNote">
+      <input type="text" v-model="noteTitle" placeholder="输入标题" v-if="currentUser">
+      <input type="text" v-model="noteContent" placeholder="输入内容" v-if="currentUser">
+      <button type="submit" v-if="currentUser">{{ isEditing ? '更新' : '添加' }}笔记</button>
+      <p v-else>请<a href="/login.html">登录</a>后再管理笔记。</p>
+      <a href="/">回首页</a>
+    </form>
+  </div>
+
+  <script type="module">
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
+    Parse.serverURL = 'https://parse.ali.glwsq.cn/parse';
+
+    const NoteCard = Parse.Object.extend("NoteCard");
+
+    createApp({
+      setup() {
+        const noteTitle = ref('');
+        const noteContent = ref('');
+        const notes = ref([]);
+        const noteList = ref(null);
+        const currentUser = ref(Parse.User.current());
+        const isEditing = ref(false);
+        const editingNote = ref(null);
+
+        const fetchNotes = async () => {
+          const query = new Parse.Query(NoteCard);
+          query.ascending("createdAt");
+          notes.value = await query.find();
+          scrollToBottom();
+        };
+
+        const saveNote = async () => {
+          if (!currentUser.value || !noteTitle.value.trim() || !noteContent.value.trim()) return;
+          let note;
+          if (isEditing.value) {
+            note = editingNote.value;
+            note.set('title', noteTitle.value);
+            note.set('content', noteContent.value);
+          } else {
+            note = new NoteCard();
+            note.set('title', noteTitle.value);
+            note.set('content', noteContent.value);
+            note.set('author', currentUser.value.getUsername());
+            const acl = new Parse.ACL(currentUser.value);
+            acl.setPublicReadAccess(true); // 公共读权限
+            acl.setWriteAccess(currentUser.value, true); // 仅作者有写权限
+            note.setACL(acl);
+          }
+
+          await note.save();
+          noteTitle.value = '';
+          noteContent.value = '';
+          isEditing.value = false;
+          fetchNotes();
+        };
+
+        const editNote = (note) => {
+          isEditing.value = true;
+          noteTitle.value = note.get('title');
+          noteContent.value = note.get('content');
+          editingNote.value = note;
+        };
+
+        const deleteNote = async (note) => {
+          await note.destroy();
+          fetchNotes();
+        };
+
+        const scrollToBottom = () => {
+          nextTick(() => {
+            if (noteList.value) {
+              noteList.value.scrollTop = noteList.value.scrollHeight;
+            }
+          });
+        };
+
+        onMounted(fetchNotes);
+
+        return { noteTitle, noteContent, notes, saveNote, editNote, deleteNote, noteList, currentUser, isEditing };
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>

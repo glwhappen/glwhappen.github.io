@@ -363,12 +363,14 @@ const app = createApp({
         play(selectedText.value)
         selectedTextTrans.value = ''
         searchWordHandler(selectedText.value).then(res => {
-          selectedTextTrans.value = res
-          console.log('baidu翻译结果:', res);
+          if (selectedTextTrans.value === '') {
+            selectedTextTrans.value = res
+            console.log('baidu翻译结果:', res);
+          }
         })
         deepl(selectedText.value).then(res => {
-          selectedTextTrans.value = res.result[0]['text']
-          console.log('deepl翻译结果:', res.result[0]['text']);
+          selectedTextTrans.value = res.translations[0]['text']
+          console.log('deepl翻译结果:', res.translations[0]['text']);
         })
         // 检查是否是一个单词
         youdao.value = {}
