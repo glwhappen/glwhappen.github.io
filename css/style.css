@@ -1,0 +1,10 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  } */
+
+/* 使用 v-cloak 指令来防止闪烁 */
+[v-cloak] {
+display: none; /* 在 Vue 渲染完成前隐藏元素 */
+}

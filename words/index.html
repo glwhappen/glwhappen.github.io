@@ -9,11 +9,13 @@
   <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
   <script src="https://unpkg.com/element-plus"></script>
   <script type="module" src="./js/app.js"></script> 
+  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="./css/style.css">
+  
 </head>
 
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <div class="container">
       <div class="column title-list">
         <button @click="addArticle">添加文章</button>
