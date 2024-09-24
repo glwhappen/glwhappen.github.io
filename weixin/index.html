@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加视口元标签 -->
+  <title>微信机器人</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .say .item {
+      margin-bottom: 20px;
+    }
+
+    .say .item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .say textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    .say button {
+      margin-top: 10px;
+    }
+    .say .add-item {
+      margin-top: 20px;
+    }
+    .say .add-item input, .add-item select, .add-item textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <div v-if="currentUser">
+      <p>欢迎，{{ currentUser.get('username') }}!</p>
+      <a href="/">回首页</a>
+      <!-- <button @click="logout">退出</button> -->
+      <div v-if="currentUser.get('wxid')">
+        <p>微信id为：{{ currentUser.get('wxid') }}</p>
+        <p>发消息url: http://nodered.glwsq.cn/weixin?to={{ weixinData && weixinData.get("to_token") }}&body=test</p>
+        <!-- <p>发消息url：{{ currentUser.get('wxid') }}</p> -->
+        <!-- <div v-if="weixinData">
+          {{ weixinData }}
+        </div> -->
+        <div v-if="weixinData && sayData" class="say">
+          <h2>教说话</h2>
+          <!-- 新增表单 -->
+          <h3>新增项</h3>
+          <div class="add-item">
+            
+            <input v-model="newItem.key" placeholder="Key" />
+            <select v-model="newItem.lang">
+              <option value="python">Python</option>
+              <option value="text">纯文本</option>
+              <!-- Add other languages if needed -->
+            </select>
+            <textarea v-model="newItem.content" placeholder="Content"></textarea>
+            <button @click="addItem">新增</button>
+          </div>
+          <h3>列表</h3>
+
+          <div v-for="(item, key) in sayData" :key="key" class="item">
+            <div class="item-header">
+              <input v-model="item.key" placeholder="Key" />
+              <select v-model="item.lang">
+                <option value="python">Python</option>
+                <option value="text">纯文本</option>
+                <!-- Add other languages if needed -->
+              </select>
+            </div>
+            <textarea v-model="item.content" placeholder="Content"></textarea>
+            <button @click="updateItem(key)">保存</button>
+            <button @click="deleteItem(key)">删除</button>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <p>您还未绑定微信 ID, 添加微信 note_card 复制发送下面的内容进行绑定</p>
+        <input type="text" :value="'申请绑定微信' + currentUser.id" readonly ref="copyText">
+        <button @click="copyToClipboard">点击复制</button>
+      </div>
+    </div>
+    <div v-else>
+      <p>还未登录</p>
+      <a href="/">回首页</a>
+    </div>
+
+  </div>
+
+  <script type="module">
+    const { createApp, ref, onMounted, nextTick, computed } = Vue;
+
+    // 初始化 Parse
+    Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
+    Parse.serverURL = 'https://parse.ali.glwsq.cn/parse';
+
+    // 导入公共函数
+    import { logout, fetchCurrentUser } from '../js/userUtils.js';
+
+    async function getWeixinData(wxid) {
+      const weixin = Parse.Object.extend("weixin");
+      const query = new Parse.Query(weixin);
+      query.equalTo("wxid", wxid);
+      return await query.first()
+    }
+
+    createApp({
+      setup() {
+        const copyText = ref(null); // 引用 input 元素
+        const weixinData = ref(null);
+        // 使用计算属性获取 sayData
+        const sayData = computed(() => weixinData.value?.get('say') || {});
+
+    // 新增项的初始值
+    const newItem = ref({
+      key: '',
+      lang: 'python',
+      content: ''
+    });
+
+        // 定义复制到剪贴板的方法
+        const copyToClipboard = () => {
+          if (copyText.value) {
+            // 选择 input 的内容
+            copyText.value.select();
+            // 复制到剪贴板
+            navigator.clipboard.writeText(copyText.value.value)
+              .then(() => {
+                alert('复制成功！'); // 显示成功消息
+              })
+              .catch(err => {
+                console.error('复制失败:', err);
+              });
+          }
+        };
+
+        const currentUser = ref(Parse.User.current());
+
+
+
+        // Method to update an item in the list
+        const updateItem = async (key) => {
+          try {
+            const updatedItem = sayData.value[key];
+            await weixinData.value.set('say', sayData.value).save();
+            alert('更新成功');
+          } catch (error) {
+            console.error('更新失败', error);
+            alert('更新失败');
+          }
+        };
+
+        // 方法用于删除数据
+        const deleteItem = async (key) => {
+          try {
+            // 删除指定的 item
+            const updatedSayData = { ...sayData.value };
+            delete updatedSayData[key];
+
+            // 更新数据
+            await weixinData.value.set('say', updatedSayData).save();
+            alert('删除成功');
+          } catch (error) {
+            console.error('删除失败', error);
+            alert('删除失败');
+          }
+        };
+
+
+            // 方法用于新增数据
+    const addItem = async () => {
+      const { key, lang, content } = newItem.value;
+           // 检查 key 是否为空
+           if (!key.trim()) {
+        alert('Key 不能为空');
+        return;
+      }
+
+      // 检查 key 是否已存在
+      if (sayData.value.hasOwnProperty(key)) {
+        alert('Key 已存在');
+        return;
+      }
+
+      try {
+        // 创建新的数据项
+        const updatedSayData = {
+          ...sayData.value,
+          [key]: {
+            key,
+            lang,
+            content
+          }
+        };
+
+        // 更新数据
+        await weixinData.value.set('say', updatedSayData).save();
+        
+        // 重置新增项的表单
+        newItem.value = {
+          key: '',
+          lang: 'python',
+          content: ''
+        };
+
+        alert('新增成功');
+      } catch (error) {
+        console.error('新增失败', error);
+        alert('新增失败');
+      }
+    };
+        // 在组件加载时获取最新的用户信息
+        onMounted(() => {
+          fetchCurrentUser(currentUser); // 组件挂载时立即获取一次
+        });
+
+        if (currentUser.value) {
+          getWeixinData(currentUser.value.get('wxid')).then((result) => {
+            weixinData.value = result;
+          });
+        }
+
+        return { currentUser, copyToClipboard, copyText, logout, weixinData, updateItem, sayData, deleteItem, newItem, addItem };
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>
