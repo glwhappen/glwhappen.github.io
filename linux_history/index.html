@@ -28,6 +28,11 @@
       </div>
     </div>
 
+    <div class="ui checkbox" style="margin-top: 20px;">
+      <input type="checkbox" v-model="filterUniqueCommands">
+      <label>只显示唯一命令</label>
+    </div>
+
     <table class="ui celled table" style="margin-top: 20px;">
       <thead>
         <tr>
@@ -75,15 +80,16 @@
         const searchQuery = ref('');
         const excludeCommands = ref('ls, echo, pwd'); // 默认排除一些常用命令
         const commands = ref([]);
+        const filterUniqueCommands = ref(true);
 
         const columns = ref({
           command: { name: '命令', visible: true },
           executionPath: { name: '执行路径', visible: true },
           hostname: { name: '主机名', visible: true },
-          ipAddress: { name: 'IP 地址', visible: false },
+          ipAddress: { name: 'IP 地址', visible: true },
           user: { name: '用户', visible: true },
           executionTime: { name: '执行时间', visible: true },
-          osVersion: { name: '操作系统版本', visible: false },
+          osVersion: { name: '操作系统版本', visible: true },
           remark: { name: '备注', visible: true }
         });
 
@@ -129,13 +135,22 @@
               return !excludes.some(exclude => command.get('command').toLowerCase() === exclude);
             });
           }
+          if (filterUniqueCommands.value) {
+            const uniqueCommands = new Map();
+            filtered.forEach(command => {
+              if (!uniqueCommands.has(command.get('command'))) {
+                uniqueCommands.set(command.get('command'), command);
+              }
+            });
+            filtered = Array.from(uniqueCommands.values());
+          }
           return filtered;
         });
 
         fetchCommands();
 
         return {
-          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime, saveRemark, columns
+          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime, saveRemark, columns, filterUniqueCommands
         };
       }
     }).mount('#app');
