@@ -20,27 +20,37 @@
       <i class="filter icon"></i>
     </div>
 
+    <div class="ui segment" style="margin-top: 20px;">
+      <h4 class="ui header">显示列设置</h4>
+      <div class="ui checkbox" v-for="(label, key) in columns" :key="key">
+        <input type="checkbox" v-model="columns[key].visible">
+        <label>{{ label.name }}</label>
+      </div>
+    </div>
+
     <table class="ui celled table" style="margin-top: 20px;">
       <thead>
         <tr>
-          <th>命令</th>
-          <th>主机名</th>
-          <th>IP 地址</th>
-          <th>用户</th>
-          <th>执行时间</th>
-          <th>操作系统版本</th>
-          <th>备注</th>
+          <th v-if="columns.command.visible">命令</th>
+          <th v-if="columns.executionPath.visible">执行路径</th>
+          <th v-if="columns.hostname.visible">主机名</th>
+          <th v-if="columns.ipAddress.visible">IP 地址</th>
+          <th v-if="columns.user.visible">用户</th>
+          <th v-if="columns.executionTime.visible">执行时间</th>
+          <th v-if="columns.osVersion.visible">操作系统版本</th>
+          <th v-if="columns.remark.visible">备注</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="command in filteredCommands" :key="command.id">
-          <td>{{ command.get('command') }}</td>
-          <td>{{ command.get('hostname') }}</td>
-          <td>{{ command.get('ip_address') }}</td>
-          <td>{{ command.get('user') }}</td>
-          <td>{{ formatBeijingTime(command.get('execution_time')) }}</td>
-          <td>{{ command.get('os_version') }}</td>
-          <td>
+          <td v-if="columns.command.visible">{{ command.get('command') }}</td>
+          <td v-if="columns.executionPath.visible">{{ command.get('execution_path') }}</td>
+          <td v-if="columns.hostname.visible">{{ command.get('hostname') }}</td>
+          <td v-if="columns.ipAddress.visible">{{ command.get('ip_address') }}</td>
+          <td v-if="columns.user.visible">{{ command.get('user') }}</td>
+          <td v-if="columns.executionTime.visible">{{ formatBeijingTime(command.get('execution_time')) }}</td>
+          <td v-if="columns.osVersion.visible">{{ command.get('os_version') }}</td>
+          <td v-if="columns.remark.visible">
             <div class="ui action input">
               <input type="text" v-model="command.updatedRemark" :placeholder="command.get('remark') || '输入备注...'">
               <button class="ui primary button" @click="saveRemark(command)">保存</button>
@@ -65,6 +75,17 @@
         const searchQuery = ref('');
         const excludeCommands = ref('ls, echo, pwd'); // 默认排除一些常用命令
         const commands = ref([]);
+
+        const columns = ref({
+          command: { name: '命令', visible: true },
+          executionPath: { name: '执行路径', visible: true },
+          hostname: { name: '主机名', visible: true },
+          ipAddress: { name: 'IP 地址', visible: false },
+          user: { name: '用户', visible: true },
+          executionTime: { name: '执行时间', visible: true },
+          osVersion: { name: '操作系统版本', visible: false },
+          remark: { name: '备注', visible: true }
+        });
 
         async function fetchCommands() {
           const query = new Parse.Query(LinuxCommand);
@@ -94,6 +115,7 @@
             filtered = filtered.filter(command => {
               return (
                 command.get('command').toLowerCase().includes(query) ||
+                command.get('execution_path')?.toLowerCase().includes(query) ||
                 command.get('hostname').toLowerCase().includes(query) ||
                 command.get('ip_address').toLowerCase().includes(query) ||
                 command.get('user').toLowerCase().includes(query) ||
@@ -113,7 +135,7 @@
         fetchCommands();
 
         return {
-          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime, saveRemark
+          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime, saveRemark, columns
         };
       }
     }).mount('#app');
