@@ -70,7 +70,7 @@
 
         function formatBeijingTime(utcTime) {
           const date = new Date(utcTime);
-          date.setHours(date.getHours() + 8); // Convert to Beijing Time (UTC+8)
+          date.setHours(date.getHours()); // Convert to Beijing Time (UTC+8)
           return date.toLocaleString();
         }
 
