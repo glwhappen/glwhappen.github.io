@@ -29,6 +29,7 @@
           <th>用户</th>
           <th>执行时间</th>
           <th>操作系统版本</th>
+          <th>备注</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +40,12 @@
           <td>{{ command.get('user') }}</td>
           <td>{{ formatBeijingTime(command.get('execution_time')) }}</td>
           <td>{{ command.get('os_version') }}</td>
+          <td>
+            <div class="ui action input">
+              <input type="text" v-model="command.updatedRemark" :placeholder="command.get('remark') || '输入备注...'">
+              <button class="ui primary button" @click="saveRemark(command)">保存</button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -63,12 +70,21 @@
           const query = new Parse.Query(LinuxCommand);
           query.descending("execution_time");
           commands.value = await query.find();
+          commands.value.forEach(command => {
+            command.updatedRemark = command.get('remark') || '';
+          });
         }
 
         function formatBeijingTime(utcTime) {
           const date = new Date(utcTime);
-          date.setHours(date.getHours() + 8); // 转换为北京时间 (UTC+8)
+          date.setHours(date.getHours());
           return date.toLocaleString();
+        }
+
+        async function saveRemark(command) {
+          command.set('remark', command.updatedRemark);
+          await command.save();
+          fetchCommands();
         }
 
         const filteredCommands = computed(() => {
@@ -80,7 +96,8 @@
                 command.get('command').toLowerCase().includes(query) ||
                 command.get('hostname').toLowerCase().includes(query) ||
                 command.get('ip_address').toLowerCase().includes(query) ||
-                command.get('user').toLowerCase().includes(query)
+                command.get('user').toLowerCase().includes(query) ||
+                (command.get('remark') && command.get('remark').toLowerCase().includes(query))
               );
             });
           }
@@ -96,7 +113,7 @@
         fetchCommands();
 
         return {
-          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime
+          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime, saveRemark
         };
       }
     }).mount('#app');
