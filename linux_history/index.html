@@ -1,55 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Linux Command Search</title>
+  <title>Linux 命令搜索</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
   <script src="https://unpkg.com/vue@3"></script>
   <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div id="app" class="ui container" v-cloak>
-    <!-- <div v-if="!currentUser" class="ui message">
-      <a href="/login.html">Please log in to view your command history</a>
-    </div> -->
-    <!-- <div v-else> -->
-      <h2 class="ui header">Linux Command History Search</h2>
-      <!-- <a href="/login.html" class="ui button">Logout</a> -->
+  <div id="app" class="ui container">
+    <h2 class="ui header">Linux 命令历史搜索</h2>
 
-      <div class="ui fluid icon input">
-        <input type="text" v-model="searchQuery" placeholder="Search commands, hostname, user...">
-        <i class="search icon"></i>
-      </div>
+    <div class="ui fluid icon input">
+      <input type="text" v-model="searchQuery" placeholder="搜索命令、主机名、用户...">
+      <i class="search icon"></i>
+    </div>
 
-      <table class="ui celled table">
-        <thead>
-          <tr>
-            <th>Command</th>
-            <th>Hostname</th>
-            <th>IP Address</th>
-            <th>User</th>
-            <th>Execution Time (Beijing Time)</th>
-            <th>OS Version</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="command in filteredCommands" :key="command.id">
-            <td>{{ command.get('command') }}</td>
-            <td>{{ command.get('hostname') }}</td>
-            <td>{{ command.get('ip_address') }}</td>
-            <td>{{ command.get('user') }}</td>
-            <td>{{ formatBeijingTime(command.get('execution_time')) }}</td>
-            <td>{{ command.get('os_version') }}</td>
-          </tr>
-        </tbody>
-      </table>
-    <!-- </div> -->
+    <div class="ui fluid icon input" style="margin-top: 10px;">
+      <input type="text" v-model="excludeCommands" placeholder="输入要排除的命令 (例如：ls, echo)">
+      <i class="filter icon"></i>
+    </div>
+
+    <table class="ui celled table" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>命令</th>
+          <th>主机名</th>
+          <th>IP 地址</th>
+          <th>用户</th>
+          <th>执行时间</th>
+          <th>操作系统版本</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="command in filteredCommands" :key="command.id">
+          <td>{{ command.get('command') }}</td>
+          <td>{{ command.get('hostname') }}</td>
+          <td>{{ command.get('ip_address') }}</td>
+          <td>{{ command.get('user') }}</td>
+          <td>{{ formatBeijingTime(command.get('execution_time')) }}</td>
+          <td>{{ command.get('os_version') }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <script type="module">
     const { createApp, ref, computed } = Vue;
 
-    // Initialize Parse
+    // 初始化 Parse
     Parse.initialize("happen-app", "YOUR_JAVASCRIPT_KEY");
     Parse.serverURL = 'https://parse.ali.glwsq.cn/parse';
 
@@ -57,44 +55,48 @@
 
     createApp({
       setup() {
-        const currentUser = ref(Parse.User.current());
         const searchQuery = ref('');
+        const excludeCommands = ref('ls, echo, pwd'); // 默认排除一些常用命令
         const commands = ref([]);
 
         async function fetchCommands() {
           const query = new Parse.Query(LinuxCommand);
-        //   query.equalTo("user", currentUser.value);
           query.descending("execution_time");
           commands.value = await query.find();
         }
 
         function formatBeijingTime(utcTime) {
           const date = new Date(utcTime);
-          date.setHours(date.getHours()); // Convert to Beijing Time (UTC+8)
+          date.setHours(date.getHours() + 8); // 转换为北京时间 (UTC+8)
           return date.toLocaleString();
         }
 
         const filteredCommands = computed(() => {
-          if (!searchQuery.value) {
-            return commands.value;
+          let filtered = commands.value;
+          if (searchQuery.value) {
+            const query = searchQuery.value.toLowerCase();
+            filtered = filtered.filter(command => {
+              return (
+                command.get('command').toLowerCase().includes(query) ||
+                command.get('hostname').toLowerCase().includes(query) ||
+                command.get('ip_address').toLowerCase().includes(query) ||
+                command.get('user').toLowerCase().includes(query)
+              );
+            });
           }
-          const query = searchQuery.value.toLowerCase();
-          return commands.value.filter(command => {
-            return (
-              command.get('command').toLowerCase().includes(query) ||
-              command.get('hostname').toLowerCase().includes(query) ||
-              command.get('ip_address').toLowerCase().includes(query) ||
-              command.get('user').toLowerCase().includes(query)
-            );
-          });
+          if (excludeCommands.value) {
+            const excludes = excludeCommands.value.toLowerCase().split(',').map(cmd => cmd.trim());
+            filtered = filtered.filter(command => {
+              return !excludes.some(exclude => command.get('command').toLowerCase() === exclude);
+            });
+          }
+          return filtered;
         });
 
-        // if (currentUser.value) {
         fetchCommands();
-        // }
 
         return {
-          currentUser, searchQuery, commands, filteredCommands, formatBeijingTime
+          searchQuery, excludeCommands, commands, filteredCommands, formatBeijingTime
         };
       }
     }).mount('#app');
